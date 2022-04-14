@@ -1,0 +1,11 @@
+server:
+  port: 8004
+
+eureka:
+  client:
+    service-url: http://localhost:7001/eureka/
+
+spring:
+  application:
+    name: observer-monitor-public
+

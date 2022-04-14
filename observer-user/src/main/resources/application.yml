@@ -1,0 +1,32 @@
+server:
+  port: 8001
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+
+spring:
+  application:
+    name: observer-user
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.178.127.14:3306/observer?useUnicode=true&character=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: sbwrsndm
+    initialSize: 5
+    maxActive: 100
+    minIdle: 3
+    maxWait: 50000
+
+mybatis-plus:
+  type-aliases-package: com.future.observeruser.po
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+shiro:
+  loginUrl: /login
+  hashAlgorithmName: md5
+  hashIterations: 3
+  storedCredentialsHexEncoded: false
