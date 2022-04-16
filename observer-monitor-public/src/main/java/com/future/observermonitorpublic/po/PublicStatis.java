@@ -33,5 +33,5 @@ public class PublicStatis {
 
     private Integer processedNum;
 
-    private Integer userId;
+    private Integer deviceId;
 }

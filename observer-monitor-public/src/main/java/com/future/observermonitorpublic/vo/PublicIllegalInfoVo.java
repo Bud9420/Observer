@@ -19,8 +19,8 @@ public class PublicIllegalInfoVo {
     @ApiModelProperty("非法信息出现时间")
     private LocalDateTime createTime;
 
-    @ApiModelProperty("监控图像")
-    private byte[] monitorImg;
+    @ApiModelProperty("监控图像的Base64编码")
+    private String monitorImg;
 
     @ApiModelProperty("非法信息处理状态")
     private String status;

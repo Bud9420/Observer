@@ -20,7 +20,7 @@ create table user_company
   charset utf8;
 # 初始数据
 insert into user_company
-values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/software/observer/imgs/user/company/1/license.jpg', '冯定清',
+values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/software/observer/imgs/company/license/中国石油天然气集团有限公司/license.jpg', '冯定清',
         '028-86433080', 'http://www.cd-rail.cn');
 
 # 用户信息
@@ -132,7 +132,7 @@ create table monitor_public_device_standard
     id          int primary key auto_increment,
     create_time datetime      not null,
     update_time datetime      not null,
-    device_id   int           not null,
+    device_id   int unique    not null,
     standard_id int default 1 not null,
     foreign key (device_id) references monitor_device (id),
     foreign key (standard_id) references monitor_public_standard (id)
@@ -252,7 +252,7 @@ create table monitor_driving_user_standard
     id          int primary key auto_increment,
     create_time datetime      not null,
     update_time datetime      not null,
-    device_id   int           not null,
+    device_id   int unique    not null,
     standard_id int default 1 not null,
     foreign key (device_id) references monitor_device (id),
     foreign key (standard_id) references monitor_driving_standard (id)

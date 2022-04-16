@@ -22,12 +22,6 @@ public class Device {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    private String appKey;
-
-    private String appSecret;
-
-    private String accessToken;
-
     private String name;
 
     private String deviceSerial;

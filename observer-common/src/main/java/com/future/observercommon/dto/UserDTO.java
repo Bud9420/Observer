@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserDTO {
 
-    // 数据库主键id
+    @ApiModelProperty("主键id")
     private Integer id;
 
     @ApiModelProperty("用户名")

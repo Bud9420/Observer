@@ -6,7 +6,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.future.*")
+@ComponentScan({"com.future.observeruser", "com.future.observercommon"})
 @EnableEurekaClient
 public class ObserverUserApplication {
 

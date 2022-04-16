@@ -1,4 +1,4 @@
-package com.future.observeruser.config;
+package com.future.observercommon.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.time.LocalDateTime;
 
 @Configuration
-@MapperScan("com.future.observeruser.mapper")
+@MapperScan("com.future.*.mapper")
 public class MyBatisPlusConfig implements MetaObjectHandler {
 
     @Bean

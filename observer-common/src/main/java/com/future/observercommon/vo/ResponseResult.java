@@ -37,13 +37,6 @@ public class ResponseResult {
         return rs;
     }
 
-    public static ResponseResult success(String msg) {
-        ResponseResult rs = new ResponseResult();
-        rs.setCode(StatusCode.OK.getCode());
-        rs.setMessage(msg);
-        return rs;
-    }
-
     public static ResponseResult fail(StatusCode statusCode, String message) {
         ResponseResult rs = new ResponseResult();
         rs.setCode(statusCode.getCode());

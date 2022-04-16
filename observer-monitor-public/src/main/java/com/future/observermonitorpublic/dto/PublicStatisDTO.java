@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class PublicStatisDTO {
 
-    private Integer userId;
+    private Integer deviceId;
 
     private Date date;
 }

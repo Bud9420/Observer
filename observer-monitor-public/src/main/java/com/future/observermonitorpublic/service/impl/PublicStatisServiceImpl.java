@@ -21,7 +21,7 @@ public class PublicStatisServiceImpl extends ServiceImpl<PublicStatisMapper, Pub
          */
         PublicStatis statis = getOne(
                 new QueryWrapper<PublicStatis>()
-                        .eq("user_id", publicStatisDTO.getUserId())
+                        .eq("device_id", publicStatisDTO.getDeviceId())
                         .eq("date", publicStatisDTO.getDate())
         );
         if (statis == null) {
@@ -32,7 +32,7 @@ public class PublicStatisServiceImpl extends ServiceImpl<PublicStatisMapper, Pub
             statis.setUntreatedNum(1);
             statis.setProcessingNum(0);
             statis.setProcessedNum(0);
-            statis.setUserId(publicStatisDTO.getUserId());
+            statis.setDeviceId(publicStatisDTO.getDeviceId());
             save(statis);
         } else {
             // 已统计过

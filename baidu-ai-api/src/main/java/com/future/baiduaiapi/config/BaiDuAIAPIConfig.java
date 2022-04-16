@@ -11,17 +11,24 @@ import org.springframework.context.annotation.Configuration;
 public class BaiDuAIAPIConfig {
 
     @Bean
-    public BaiDuAIRequestInfo baiDuAIRequestInfoDto() {
+    public BaiDuAIRequestInfo baiDuAIRequestInfo() {
         BaiDuAIRequestInfo requestInfoDto = new BaiDuAIRequestInfo();
 
-        requestInfoDto.setGetURLOfAccessToken("https://aip.baidubce.com/oauth/2.0/token");
-        requestInfoDto.setGetGrantTypeOfAccessToken("client_credentials");
-        requestInfoDto.setAPIKey("UhHirGcxb0Td337DKyyx3Vq4");
-        requestInfoDto.setSecretKey("1okNz3NNfYfw2ASvhKq8i6SrrGUSI6hv");
+        requestInfoDto.setUrlOfAccessToken("https://aip.baidubce.com/oauth/2.0/token");
+        requestInfoDto.setParamsOfAccessToken(
+                String.format(
+                        "grant_type=%s&client_id=%s&client_secret=%s",
+                        "client_credentials",
+                        "UhHirGcxb0Td337DKyyx3Vq4",
+                        "1okNz3NNfYfw2ASvhKq8i6SrrGUSI6hv"
+                )
+        );
 
-        requestInfoDto.setURLOfHumanBodyDetection("https://aip.baidubce.com/rest/2.0/image-classify/v1/body_attr");
+        requestInfoDto.setParamsOfImg("image=%s");
 
-        requestInfoDto.setURLOfDrivingBehavior("https://aip.baidubce.com/rest/2.0/image-classify/v1/driver_behavior");
+        requestInfoDto.setUrlOfHumanBodyDetection("https://aip.baidubce.com/rest/2.0/image-classify/v1/body_attr");
+
+        requestInfoDto.setUrlOfDrivingBehavior("https://aip.baidubce.com/rest/2.0/image-classify/v1/driver_behavior");
 
         return requestInfoDto;
     }

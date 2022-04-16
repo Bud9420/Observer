@@ -49,6 +49,13 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <!-- 支持在feign中使用"@GetMapping + @RequestBody" -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>10.12</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

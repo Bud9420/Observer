@@ -21,9 +21,6 @@ public class YSOpenRequestInfo {
     // 请求参数
     private String paramsOfAccessToken;
 
-    // AccessToken
-    private String accessToken;
-
     /*
      * 抓取监控图片
      */

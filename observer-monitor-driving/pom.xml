@@ -23,7 +23,6 @@
         <mp.version>3.5.1</mp.version>
         <mysql.version>8.0.26</mysql.version>
         <druid.version>1.2.8</druid.version>
-        <shiro-spring-boot-web-starter.version>1.8.0</shiro-spring-boot-web-starter.version>
     </properties>
 
     <dependencies>
@@ -71,12 +70,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring-boot-web-starter</artifactId>
-            <version>${shiro-spring-boot-web-starter.version}</version>
         </dependency>
     </dependencies>
 

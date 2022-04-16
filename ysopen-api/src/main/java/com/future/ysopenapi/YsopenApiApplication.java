@@ -3,8 +3,10 @@ package com.future.ysopenapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan({"com.future.ysopenapi", "com.future.observercommon"})
 @EnableEurekaClient
 public class YsopenApiApplication {
 
@@ -12,3 +14,4 @@ public class YsopenApiApplication {
         SpringApplication.run(YsopenApiApplication.class, args);
     }
 }
+

@@ -1,9 +1,14 @@
 server:
-  port: 8005
+  port: 8006
 
 eureka:
   client:
-    service-url: http://localhost:7001/eureka/
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
 
 spring:
   application:

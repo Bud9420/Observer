@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.observermonitorpublic.mapper.PublicStandardMapper">
+
+    <select id="selectOneByDeviceId" parameterType="integer" resultType="PublicStandard">
+        select ps.*
+        from monitor_public_standard ps
+                 left join monitor_public_device_standard pds
+                           on ps.id = pds.standard_id
+                 left join monitor_device d
+                           on pds.standard_id = d.id
+        where d.id = #{deviceId}
+    </select>
+
+</mapper>

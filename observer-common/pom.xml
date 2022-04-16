@@ -17,7 +17,9 @@
     <name>observer-common</name>
 
     <properties>
-        <jwt.version>0.9.0</jwt.version>
+        <mp.version>3.5.1</mp.version>
+        <mysql.version>8.0.26</mysql.version>
+        <druid.version>1.2.8</druid.version>
         <swagger.version>3.0.0</swagger.version>
     </properties>
 
@@ -34,9 +36,22 @@
         </dependency>
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${jwt.version}</version>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
         </dependency>
 
         <dependency>

@@ -2,8 +2,8 @@ package com.future.observermonitorpublic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.ImgBasePath;
-import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.util.DateUtil;
 import com.future.observercommon.util.FileUtil;
 import com.future.observercommon.util.JacksonUtil;
@@ -11,17 +11,16 @@ import com.future.observermonitorpublic.dto.PublicStatisDTO;
 import com.future.observermonitorpublic.mapper.PublicImgMapper;
 import com.future.observermonitorpublic.mapper.PublicPeopleMapper;
 import com.future.observermonitorpublic.mapper.PublicStandardMapper;
-import com.future.observermonitorpublic.mapper.PublicUserStandardMapper;
 import com.future.observermonitorpublic.po.*;
 import com.future.observermonitorpublic.service.BaiDuAIService;
 import com.future.observermonitorpublic.service.PublicMonitorService;
 import com.future.observermonitorpublic.service.PublicStatisService;
-import com.future.observermonitorpublic.service.YSOpenService;
 import com.future.observermonitorpublic.vo.PublicIllegalInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,17 +33,10 @@ import java.util.List;
 public class PublicMonitorServiceImpl implements PublicMonitorService {
 
     @Autowired
-    private YSOpenService ysOpenService;
-
-    @Autowired
     private BaiDuAIService baiDuAIService;
 
     @Autowired
     private PublicStatisService publicStatisService;
-
-    @Autowired
-    @SuppressWarnings("all")
-    private PublicUserStandardMapper publicUserStandardMapper;
 
     @Autowired
     @SuppressWarnings("all")
@@ -62,21 +54,16 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private ImgBasePath imgBasePath;
 
     @Override
-    public void autoMonitor(UserDTO userDTO) throws Exception {
-        // 监控图片
-        byte[] monitorImg = (byte[]) ysOpenService.getMonitorImg().getResult();
+    public void check(DeviceDTO deviceDTO) throws Exception {
+        // 获取监控图片的字节流
+        byte[] monitorImg = FileUtil.receiveFile(deviceDTO.getPicUrl());
         // 检测结果
-        String detectionResult = (String) baiDuAIService.checkImg("public", monitorImg).getResult();
+        String detectionResult = (String) baiDuAIService.check(deviceDTO).getResult();
 
-        /*
-         * 获取用户定义的非法信息标准
-         */
-        PublicUserStandard userStandard = publicUserStandardMapper.selectOne(new QueryWrapper<PublicUserStandard>().eq("user_id", userDTO.getId()));
-        PublicStandard standard = publicStandardMapper.selectById(userStandard.getStandardId());
+        // 获取监控设备的非法信息标准
+        PublicStandard standard = publicStandardMapper.selectOneByDeviceId(deviceDTO.getDeviceId());
 
-        // 用于标识图片是否出现了非法信息，true表示出现，false表示未出现
-        boolean flag = false;
-        // 保存当前图片的检测信息
+        // 保存当前图片的非法检测信息
         LinkedList<PublicPeople> list = new LinkedList<>();
 
         /*
@@ -87,10 +74,6 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         JsonNode personInfo = JacksonUtil.jsonNodeOf(detectionResult, "person_info");
         for (int i = 0; i < personInfo.size(); i++) {
             JsonNode attributes = JacksonUtil.jsonNodeOf(personInfo.get(i), "attributes");
-
-            if (attributes.asText().equals("")) {
-                break;
-            }
 
             PublicPeople people = new PublicPeople();
 
@@ -248,7 +231,6 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                 String standardField = (String) standardFields[j].get(standard);
                 String peopleField = (String) peopleFields[j].get(people);
                 if (standardField != null && standardField.contains(peopleField)) { // 出现非法信息
-                    flag = false;
                     list.add(people);
                 }
             }
@@ -257,13 +239,13 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         /*
          * 保存非法信息
          */
-        if (flag) {
+        if (list.size() > 0) {
             // 保存非法监控图像
-            File illegalImg = FileUtil.createFile(imgBasePath.getPublicMonitorPath() + "/" + userDTO.getUsername() + "/" + DateUtil.getNow());
+            File illegalImg = FileUtil.createFile(imgBasePath.getPublicMonitorPath() + "/" + deviceDTO.getDeviceSerial() + "/" + DateUtil.getNow() + ".jpg");
             FileUtil.copy(monitorImg, illegalImg);
             PublicImg publicImg = new PublicImg();
             publicImg.setPath(illegalImg.getPath());
-            publicImg.setUserId(userDTO.getId());
+            publicImg.setDeviceId(deviceDTO.getDeviceId());
             publicImgMapper.insert(publicImg);
 
             // 保存非法监控信息
@@ -273,7 +255,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
                 // 非法统计
                 PublicStatisDTO publicStatisDTO = new PublicStatisDTO(
-                        userDTO.getId(),
+                        deviceDTO.getDeviceId(),
                         DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd")
                 );
                 publicStatisService.add(publicStatisDTO);
@@ -282,13 +264,14 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     }
 
     @Override
-    public List<PublicIllegalInfoVo> findIllegalInfoAll(UserDTO userDTO) throws IOException {
+    public List<PublicIllegalInfoVo> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
         // 获取所有非法监控图像
         List<PublicImg> publicImgList = publicImgMapper.selectList(
                 new QueryWrapper<PublicImg>()
-                        .eq("user_id", userDTO.getId())
+                        .eq("device_id", deviceDTO.getDeviceId())
                         .orderByDesc("create_time")
         );
+
         // 获取所有非法信息
         List<PublicIllegalInfoVo> publicIllegalInfoVoList = new LinkedList<>();
         for (PublicImg publicImg : publicImgList) {
@@ -300,7 +283,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
             PublicIllegalInfoVo publicIllegalInfoVo = new PublicIllegalInfoVo(
                     publicImg.getCreateTime(),
-                    FileUtil.readFileAsBytes(publicImg.getPath()),
+                    Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
                     publicImg.getStatus(),
                     publicPeopleList
             );

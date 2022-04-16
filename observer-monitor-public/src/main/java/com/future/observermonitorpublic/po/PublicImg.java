@@ -26,5 +26,5 @@ public class PublicImg {
 
     private String status;
 
-    private Integer userId;
+    private Integer deviceId;
 }

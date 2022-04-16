@@ -12,35 +12,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BaiDuAIRequestInfo {
 
-    /**
-     * access_token的请求信息
+    /*
+     * AccessToken的请求信息
      */
-    // 获取access_token的URL
-    private String getURLOfAccessToken;
+    // 请求URL
+    private String urlOfAccessToken;
 
-    // 获取access_token的固定参数
-    private String getGrantTypeOfAccessToken;
+    // 请求参数
+    private String paramsOfAccessToken;
 
-    // API Key
-    private String APIKey;
-
-    // Secret Key
-    private String SecretKey;
-
-    /**
-     * access_token
+    /*
+     * AccessToken
      */
     private String accessToken;
 
-    /**
+    /*
+     * 图片的请求参数
+     */
+    private String paramsOfImg;
+
+    /*
      * 人体检测和属性识别的请求信息
      */
     // 请求URL
-    private String URLOfHumanBodyDetection;
+    private String urlOfHumanBodyDetection;
 
-    /**
+    /*
      * 驾驶行为分析的请求信息
      */
     // 请求URL
-    private String URLOfDrivingBehavior;
+    private String urlOfDrivingBehavior;
 }

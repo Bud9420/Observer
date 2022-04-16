@@ -46,7 +46,7 @@ public class YSOpenServiceImpl implements YSOpenService {
         // 拼接请求参数
         String params = String.format(
                 ysOpenRequestInfo.getParamsOfCapture(),
-                ysOpenRequestInfo.getAccessToken(),
+                deviceDTO.getAccessToken(),
                 deviceDTO.getDeviceSerial(),
                 deviceDTO.getChannelNo()
         );

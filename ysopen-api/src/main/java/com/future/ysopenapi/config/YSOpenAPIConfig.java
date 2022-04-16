@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class YSOpenAPIConfig {
 
     @Bean
-    public YSOpenRequestInfo ysOpenRequestInfoDto() {
+    public YSOpenRequestInfo ysOpenRequestInfo() {
         YSOpenRequestInfo requestInfoDto = new YSOpenRequestInfo();
 
         requestInfoDto.setUrlOfAccessToken("https://open.ys7.com/api/lapp/token/get");
