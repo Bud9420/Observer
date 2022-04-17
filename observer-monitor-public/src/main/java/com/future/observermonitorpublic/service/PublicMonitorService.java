@@ -1,7 +1,7 @@
 package com.future.observermonitorpublic.service;
 
 import com.future.observercommon.dto.DeviceDTO;
-import com.future.observermonitorpublic.vo.PublicIllegalInfoVo;
+import com.future.observercommon.vo.PublicIllegalInfoVO;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -22,12 +22,12 @@ public interface PublicMonitorService {
     void check(DeviceDTO deviceDTO) throws Exception;
 
     /**
-     * <获取当前用户的所有非法监控信息>
+     * <获取当前设备的所有非法监控信息>
      *
      * @param deviceDTO 监控设备DTO
-     * @return 当前用户的所有非法监控图像
+     * @return 当前设备的所有非法监控图片及非法信息列表
      * @throws ParseException JSON解析异常
      * @throws IOException    监控图片获取异常
      */
-    List<PublicIllegalInfoVo> findIllegalInfoAll(DeviceDTO deviceDTO) throws ParseException, IOException;
+    List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws ParseException, IOException;
 }

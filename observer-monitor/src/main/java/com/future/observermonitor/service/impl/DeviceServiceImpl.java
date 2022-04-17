@@ -56,15 +56,16 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             rs = (String) ysOpenService.capture(deviceDTO).getResult();
         }
 
-        /*
-         * 获取监控图片的网络路径，并保存至deviceDTO
-         */
+        // 获取监控图片的网络路径，并保存至deviceDTO
         String picUrl = JacksonUtil.jsonNodeOf(rs, "data", "picUrl").asText();
         deviceDTO.setPicUrl(picUrl);
 
-        /*
-         * 获取监控设备的主键id，并保存至deviceDTO
-         */
+        // 获取监控设备的主键id，并保存至deviceDTO
+        getId(deviceDTO);
+    }
+
+    @Override
+    public void getId(DeviceDTO deviceDTO) {
         Device device = getOne(new QueryWrapper<Device>().eq("device_serial", deviceDTO.getDeviceSerial()));
         deviceDTO.setDeviceId(device.getId());
     }

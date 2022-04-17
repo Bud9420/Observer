@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.ImgBasePath;
+import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.DateUtil;
 import com.future.observercommon.util.FileUtil;
 import com.future.observercommon.util.JacksonUtil;
@@ -15,7 +16,8 @@ import com.future.observermonitorpublic.po.*;
 import com.future.observermonitorpublic.service.BaiDuAIService;
 import com.future.observermonitorpublic.service.PublicMonitorService;
 import com.future.observermonitorpublic.service.PublicStatisService;
-import com.future.observermonitorpublic.vo.PublicIllegalInfoVo;
+import com.future.observercommon.vo.PublicIllegalInfoVO;
+import com.future.observercommon.vo.PublicPeopleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -264,7 +266,10 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     }
 
     @Override
-    public List<PublicIllegalInfoVo> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
+    public List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
+        // 用于保存当前设备的所有非法监控图片及非法信息列表
+        List<PublicIllegalInfoVO> publicIllegalInfoVOList = new LinkedList<>();
+
         // 获取所有非法监控图像
         List<PublicImg> publicImgList = publicImgMapper.selectList(
                 new QueryWrapper<PublicImg>()
@@ -272,24 +277,30 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                         .orderByDesc("create_time")
         );
 
-        // 获取所有非法信息
-        List<PublicIllegalInfoVo> publicIllegalInfoVoList = new LinkedList<>();
+        // 获取每个非法监控图像对应的非法信息
         for (PublicImg publicImg : publicImgList) {
-            // 获取每个非法监控图像对应的非法信息
             List<PublicPeople> publicPeopleList = publicPeopleMapper.selectList(
                     new QueryWrapper<PublicPeople>()
                             .eq("img_id", publicImg.getId())
             );
+            List<PublicPeopleVO> publicPeopleVOList = new LinkedList<>();
+            for (PublicPeople publicPeople : publicPeopleList) {
+                PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
+                BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
+                publicPeopleVOList.add(publicPeopleVO);
+            }
 
-            PublicIllegalInfoVo publicIllegalInfoVo = new PublicIllegalInfoVo(
+            // 保存当前设备的当前非法监控图片及非法信息列表
+            PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO(
                     publicImg.getCreateTime(),
                     Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
                     publicImg.getStatus(),
-                    publicPeopleList
+                    publicPeopleVOList
             );
-
-            publicIllegalInfoVoList.add(publicIllegalInfoVo);
+            publicIllegalInfoVOList.add(publicIllegalInfoVO);
         }
-        return publicIllegalInfoVoList;
+
+        // 返回当前设备的所有非法监控图片及非法信息列表
+        return publicIllegalInfoVOList;
     }
 }

@@ -1,4 +1,4 @@
-package com.future.observermonitorpublic.vo;
+package com.future.observercommon.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

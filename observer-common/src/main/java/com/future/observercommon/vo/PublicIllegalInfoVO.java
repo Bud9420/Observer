@@ -1,6 +1,5 @@
-package com.future.observermonitorpublic.vo;
+package com.future.observercommon.vo;
 
-import com.future.observermonitorpublic.po.PublicPeople;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,11 +9,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ApiModel("非法信息VO")
-@Data
-@AllArgsConstructor
+@ApiModel("公共场所非法信息VO")
 @NoArgsConstructor
-public class PublicIllegalInfoVo {
+@AllArgsConstructor
+@Data
+public class PublicIllegalInfoVO {
 
     @ApiModelProperty("非法信息出现时间")
     private LocalDateTime createTime;
@@ -26,5 +25,5 @@ public class PublicIllegalInfoVo {
     private String status;
 
     @ApiModelProperty("非法信息列表")
-    private List<PublicPeople> illegalInfoList;
+    private List<PublicPeopleVO> illegalInfoList;
 }

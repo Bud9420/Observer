@@ -25,4 +25,11 @@ public interface DeviceService extends IService<Device> {
      * @throws Exception ysopen-api服务异常或JSON解析异常
      */
     void capture(DeviceDTO deviceDTO) throws Exception;
+
+    /**
+     * <通过设备序列号查找设备的主键id，并保存至deviceDTO>
+     *
+     * @param deviceDTO 监控设备DTO
+     */
+    void getId(DeviceDTO deviceDTO);
 }

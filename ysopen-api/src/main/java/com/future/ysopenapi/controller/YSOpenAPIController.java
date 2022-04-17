@@ -16,7 +16,7 @@ public class YSOpenAPIController {
     @Autowired
     private YSOpenService ysOpenService;
 
-    @ApiOperation(value = "获取监控AccessToken", notes = "主要用于监控视频接入")
+    @ApiOperation("获取监控AccessToken")
     @GetMapping("/access-token")
     public ResponseResult getAccessToken(@RequestBody DeviceDTO deviceDTO) throws Exception {
         return ResponseResult.success(ysOpenService.getAccessToken(deviceDTO));
