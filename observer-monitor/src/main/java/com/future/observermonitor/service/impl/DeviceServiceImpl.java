@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.UserDTO;
+import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.JacksonUtil;
 import com.future.observermonitor.mapper.DeviceMapper;
 import com.future.observermonitor.po.Device;
@@ -11,10 +13,14 @@ import com.future.observermonitor.po.Secret;
 import com.future.observermonitor.service.DeviceService;
 import com.future.observermonitor.service.SecretService;
 import com.future.observermonitor.service.YSOpenService;
+import com.future.observermonitor.vo.DeviceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -25,6 +31,18 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     @Autowired
     private SecretService secretService;
+
+    @Override
+    public List<DeviceVO> listByUserDTO(UserDTO userDTO) {
+        List<Device> deviceList = list(new QueryWrapper<Device>().eq("user_id", userDTO.getId()));
+        List<DeviceVO> deviceVOList = new ArrayList<>();
+        for (Device device : deviceList) {
+            DeviceVO deviceVO = new DeviceVO();
+            BeanUtil.copyBeanProp(deviceVO, device);
+            deviceVOList.add(deviceVO);
+        }
+        return deviceVOList;
+    }
 
     @Override
     public String getAccessToken(DeviceDTO deviceDTO) throws Exception {

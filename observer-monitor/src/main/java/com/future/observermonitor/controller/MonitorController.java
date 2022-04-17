@@ -2,10 +2,12 @@ package com.future.observermonitor.controller;
 
 import com.future.observercommon.constant.StatusCode;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.vo.ResponseResult;
 import com.future.observermonitor.service.DeviceService;
 // import com.future.observermonitor.service.DrivingMonitorService;
 import com.future.observermonitor.service.PublicMonitorService;
+import com.future.observermonitor.service.SecretService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +24,25 @@ public class MonitorController {
     private DeviceService deviceService;
 
     @Autowired
+    private SecretService secretService;
+
+    @Autowired
     private PublicMonitorService publicMonitorService;
 
     // @Autowired
     // private DrivingMonitorService drivingMonitorService;
+
+    @ApiOperation("获取用户的所有设备")
+    @GetMapping("/devices")
+    public ResponseResult getDeviceList(@RequestBody UserDTO userDTO) {
+        return ResponseResult.success(deviceService.listByUserDTO(userDTO));
+    }
+
+    @ApiOperation("获取用户的secret")
+    @GetMapping("/secret")
+    public ResponseResult getSecret(@RequestBody UserDTO userDTO) {
+        return ResponseResult.success(secretService.getOneByUserDTO(userDTO));
+    }
 
     @ApiOperation("获取监控AccessToken，用于监控视频接入")
     @GetMapping("/access-token")

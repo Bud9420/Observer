@@ -26,7 +26,7 @@ public class Device {
 
     private String deviceSerial;
 
-    private String channelNo;
+    private Integer channelNo;
 
     private Integer userId;
 }

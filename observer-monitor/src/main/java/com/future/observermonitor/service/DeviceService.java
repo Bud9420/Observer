@@ -2,9 +2,21 @@ package com.future.observermonitor.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.UserDTO;
 import com.future.observermonitor.po.Device;
+import com.future.observermonitor.vo.DeviceVO;
+
+import java.util.List;
 
 public interface DeviceService extends IService<Device> {
+
+    /**
+     * <获取用户的所有设备>
+     *
+     * @param userDTO 用户DTO
+     * @return 用户的所有设备
+     */
+    List<DeviceVO> listByUserDTO(UserDTO userDTO);
 
     /**
      * <获取萤石开放平台的AccessToken>
