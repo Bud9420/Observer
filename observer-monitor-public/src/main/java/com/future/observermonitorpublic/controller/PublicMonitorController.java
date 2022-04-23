@@ -19,11 +19,10 @@ public class PublicMonitorController {
     @Autowired
     private PublicMonitorService publicMonitorService;
 
-    @ApiOperation("调用百度AI接口进行对图片进行检测，添加非法监控图片及非法信息")
+    @ApiOperation("调用百度AI接口进行对图片进行检测，添加非法监控图片及非法信息，返回非法信息")
     @PostMapping
     public ResponseResult check(@RequestBody DeviceDTO deviceDTO) throws Exception {
-        publicMonitorService.check(deviceDTO);
-        return ResponseResult.success();
+        return ResponseResult.success(publicMonitorService.check(deviceDTO));
     }
 
     @ApiOperation("获取非法监控图片及非法信息列表")

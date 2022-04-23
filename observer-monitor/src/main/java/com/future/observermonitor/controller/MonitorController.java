@@ -46,11 +46,11 @@ public class MonitorController {
 
     @ApiOperation("获取监控AccessToken，用于监控视频接入")
     @GetMapping("/access-token")
-    public ResponseResult getMonitorToken(@RequestBody DeviceDTO deviceDTO) throws Exception {
+    public ResponseResult getMonitorToken(DeviceDTO deviceDTO) throws Exception {
         return ResponseResult.success(deviceService.getAccessToken(deviceDTO));
     }
 
-    @ApiOperation("添加非法监控图片及非法信息, 通过萤石开放平台抓取监控图片，并调用百度AI接口进行对图片进行检测")
+    @ApiOperation("添加非法监控图片及非法信息, 通过萤石开放平台抓取监控图片，并调用百度AI接口进行对图片进行检测，返回非法信息")
     @PostMapping("/{scene}")
     public ResponseResult detectMonitorVideo(@PathVariable String scene, @RequestBody DeviceDTO deviceDTO) throws Exception {
         deviceService.capture(deviceDTO);
@@ -58,16 +58,11 @@ public class MonitorController {
 
         switch (scene) {
             case "public":
-                publicMonitorService.check(deviceDTO);
-                break;
+                return publicMonitorService.check(deviceDTO);
             case "driving":
-                // drivingMonitorService.check(deviceDTO);
-                break;
             default:
                 return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在该应用场景" + scene);
         }
-
-        return ResponseResult.success();
     }
 
     @ApiOperation("获取非法监控图片及非法信息列表")

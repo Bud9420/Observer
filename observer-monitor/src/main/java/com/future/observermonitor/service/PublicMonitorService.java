@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface PublicMonitorService {
 
     @PostMapping("/monitor-public")
-    void check(@RequestBody DeviceDTO deviceDTO) throws Exception;
+    ResponseResult check(@RequestBody DeviceDTO deviceDTO) throws Exception;
 
     @GetMapping("/monitor-public")
     ResponseResult illegalInfoVOList(@RequestBody DeviceDTO deviceDTO);

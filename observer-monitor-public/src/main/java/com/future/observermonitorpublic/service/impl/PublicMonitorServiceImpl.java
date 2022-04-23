@@ -27,6 +27,7 @@ import org.springframework.util.Base64Utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private ImgBasePath imgBasePath;
 
     @Override
-    public void check(DeviceDTO deviceDTO) throws Exception {
+    public PublicIllegalInfoVO check(DeviceDTO deviceDTO) throws Exception {
         // 获取监控图片的字节流
         byte[] monitorImg = FileUtil.receiveFile(deviceDTO.getPicUrl());
         // 检测结果
@@ -66,7 +67,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         PublicStandard standard = publicStandardMapper.selectOneByDeviceId(deviceDTO.getDeviceId());
 
         // 保存当前图片的非法检测信息
-        LinkedList<PublicPeople> list = new LinkedList<>();
+        LinkedList<PublicPeople> publicPeopleList = new LinkedList<>();
 
         /*
          * 获取非法信息中的每个属性
@@ -233,7 +234,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                 String standardField = (String) standardFields[j].get(standard);
                 String peopleField = (String) peopleFields[j].get(people);
                 if (standardField != null && standardField.contains(peopleField)) { // 出现非法信息
-                    list.add(people);
+                    publicPeopleList.add(people);
                 }
             }
         }
@@ -241,7 +242,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         /*
          * 保存非法信息
          */
-        if (list.size() > 0) {
+        if (publicPeopleList.size() > 0) {
             // 保存非法监控图像
             File illegalImg = FileUtil.createFile(imgBasePath.getPublicMonitorPath() + "/" + deviceDTO.getDeviceSerial() + "/" + DateUtil.getNow() + ".jpg");
             FileUtil.copy(monitorImg, illegalImg);
@@ -251,7 +252,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             publicImgMapper.insert(publicImg);
 
             // 保存非法监控信息
-            for (PublicPeople people : list) {
+            for (PublicPeople people : publicPeopleList) {
                 people.setImgId(publicImg.getId());
                 publicPeopleMapper.insert(people);
 
@@ -263,6 +264,19 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                 publicStatisService.add(publicStatisDTO);
             }
         }
+
+        /*
+         * 返回非法信息
+         */
+        PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO();
+        List<PublicPeopleVO> publicPeopleVOList = new ArrayList<>(publicPeopleList.size());
+        for (PublicPeople publicPeople : publicPeopleList) {
+            PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
+            BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
+            publicPeopleVOList.add(publicPeopleVO);
+        }
+        publicIllegalInfoVO.setIllegalInfoList(publicPeopleVOList);
+        return publicIllegalInfoVO;
     }
 
     @Override
