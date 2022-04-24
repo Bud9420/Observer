@@ -34,13 +34,13 @@ public class MonitorController {
 
     @ApiOperation("获取用户的所有设备")
     @GetMapping("/devices")
-    public ResponseResult getDeviceList(@RequestBody UserDTO userDTO) {
+    public ResponseResult getDeviceList(UserDTO userDTO) {
         return ResponseResult.success(deviceService.listByUserDTO(userDTO));
     }
 
     @ApiOperation("获取用户的secret")
     @GetMapping("/secret")
-    public ResponseResult getSecret(@RequestBody UserDTO userDTO) {
+    public ResponseResult getSecret(UserDTO userDTO) {
         return ResponseResult.success(secretService.getOneByUserDTO(userDTO));
     }
 
@@ -67,7 +67,7 @@ public class MonitorController {
 
     @ApiOperation("获取非法监控图片及非法信息列表")
     @GetMapping("/{scene}")
-    public ResponseResult getIllegalInfoAll(@PathVariable String scene, @RequestBody DeviceDTO deviceDTO) {
+    public ResponseResult getIllegalInfoAll(@PathVariable String scene, DeviceDTO deviceDTO) {
         deviceService.getId(deviceDTO);
 
         switch (scene) {

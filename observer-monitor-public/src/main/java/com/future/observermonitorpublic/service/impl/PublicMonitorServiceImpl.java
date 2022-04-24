@@ -1,6 +1,7 @@
 package com.future.observermonitorpublic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.ImgBasePath;
@@ -285,11 +286,12 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         List<PublicIllegalInfoVO> publicIllegalInfoVOList = new LinkedList<>();
 
         // 获取所有非法监控图像
-        List<PublicImg> publicImgList = publicImgMapper.selectList(
+        List<PublicImg> publicImgList = publicImgMapper.selectPage(
+                new Page<>(1, 20),
                 new QueryWrapper<PublicImg>()
                         .eq("device_id", deviceDTO.getDeviceId())
                         .orderByDesc("create_time")
-        );
+        ).getRecords();
 
         // 获取每个非法监控图像对应的非法信息
         for (PublicImg publicImg : publicImgList) {

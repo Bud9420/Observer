@@ -20,7 +20,8 @@ create table user_company
   charset utf8;
 # 初始数据
 insert into user_company
-values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/software/observer/imgs/company/license/中国石油天然气集团有限公司/license.jpg', '冯定清',
+values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/software/observer/imgs/company/license/中国石油天然气集团有限公司/license.jpg',
+        '冯定清',
         '028-86433080', 'http://www.cd-rail.cn');
 
 # 用户信息
@@ -146,12 +147,12 @@ values (1, now(), now(), 1, 1);
 create table monitor_public_img
 (
     id          int primary key auto_increment,
-    create_time datetime                                                           not null,
-    update_time datetime                                                           not null,
-    path        varchar(255) unique                                                not null,
+    create_time datetime                                                                                    not null,
+    update_time datetime                                                                                    not null,
+    path        varchar(255) unique                                                                         not null,
     # 非法信息处理状态
-    status      varchar(255) default '未处理' check (status in ('未处理', '已处理', '处理中')) not null,
-    device_id   int                                                                not null,
+    status      varchar(255) default 'untreated' check (status in ('untreated', 'processing', 'processed')) not null,
+    device_id   int                                                                                         not null,
     foreign key (device_id) references monitor_device (id)
 ) engine = InnoDB
   charset utf8;
