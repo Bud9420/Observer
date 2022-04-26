@@ -28,9 +28,7 @@ import org.springframework.util.Base64Utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -66,6 +64,9 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
         // 获取监控设备的非法信息标准
         PublicStandard standard = publicStandardMapper.selectOneByDeviceId(deviceDTO.getDeviceId());
+
+        // 当前图片的非法类型
+        Set<String> illegalType = new HashSet<>();
 
         // 保存当前图片的非法检测信息
         LinkedList<PublicPeople> publicPeopleList = new LinkedList<>();
@@ -229,14 +230,19 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
              */
             Field[] standardFields = PublicStandard.class.getDeclaredFields();
             Field[] peopleFields = PublicPeople.class.getDeclaredFields();
+            boolean flag = false; // 表示当前人体信息是否非法
             for (int j = 7; j < standardFields.length; j++) {
                 standardFields[j].setAccessible(true);
                 peopleFields[j].setAccessible(true);
                 String standardField = (String) standardFields[j].get(standard);
                 String peopleField = (String) peopleFields[j].get(people);
                 if (standardField != null && standardField.contains(peopleField)) { // 出现非法信息
-                    publicPeopleList.add(people);
+                    illegalType.add(peopleField);
+                    flag = true;
                 }
+            }
+            if (flag) {
+                publicPeopleList.add(people);
             }
         }
 
@@ -247,8 +253,13 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             // 保存非法监控图像
             File illegalImg = FileUtil.createFile(imgBasePath.getPublicMonitorPath() + "/" + deviceDTO.getDeviceSerial() + "/" + DateUtil.getNow() + ".jpg");
             FileUtil.copy(monitorImg, illegalImg);
+
+            String s = illegalType.toString();
+            s = s.substring(1, s.length() - 1); // 去除"["和"]"
+
             PublicImg publicImg = new PublicImg();
             publicImg.setPath(illegalImg.getPath());
+            publicImg.setIllegalType(s);
             publicImg.setDeviceId(deviceDTO.getDeviceId());
             publicImgMapper.insert(publicImg);
 
@@ -311,6 +322,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                     publicImg.getCreateTime(),
                     Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
                     publicImg.getStatus(),
+                    publicImg.getIllegalType(),
                     publicPeopleVOList
             );
             publicIllegalInfoVOList.add(publicIllegalInfoVO);

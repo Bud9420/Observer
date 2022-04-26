@@ -16,4 +16,7 @@ public interface YSOpenService {
 
     @GetMapping("/ysopen/capture")
     ResponseResult capture(@RequestBody DeviceDTO deviceDTO) throws Exception;
+
+    @GetMapping("/ysopen/device-info")
+    ResponseResult getDeviceInfo(@RequestBody DeviceDTO deviceDTO) throws Exception;
 }

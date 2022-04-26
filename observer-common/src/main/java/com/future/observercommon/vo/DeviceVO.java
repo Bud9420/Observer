@@ -1,4 +1,4 @@
-package com.future.observermonitor.vo;
+package com.future.observercommon.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,12 +12,18 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeviceVO {
 
-    @ApiModelProperty("设备名")
-    private String name;
-
     @ApiModelProperty("设备序列号")
     private String deviceSerial;
 
     @ApiModelProperty("通道号")
     private Integer channelNo;
+
+    @ApiModelProperty("设备名")
+    private String name;
+
+    @ApiModelProperty("设备在线状态")
+    private String status;
+
+    @ApiModelProperty("设备信号")
+    private String deviceSignal;
 }

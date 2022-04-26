@@ -21,10 +21,10 @@ import javax.servlet.http.HttpSession;
 public class MonitorController {
 
     @Autowired
-    private DeviceService deviceService;
+    private SecretService secretService;
 
     @Autowired
-    private SecretService secretService;
+    private DeviceService deviceService;
 
     @Autowired
     private PublicMonitorService publicMonitorService;
@@ -32,16 +32,16 @@ public class MonitorController {
     // @Autowired
     // private DrivingMonitorService drivingMonitorService;
 
-    @ApiOperation("获取用户的所有设备")
-    @GetMapping("/devices")
-    public ResponseResult getDeviceList(UserDTO userDTO) {
-        return ResponseResult.success(deviceService.listByUserDTO(userDTO));
-    }
-
     @ApiOperation("获取用户的secret")
     @GetMapping("/secret")
     public ResponseResult getSecret(UserDTO userDTO) {
         return ResponseResult.success(secretService.getOneByUserDTO(userDTO));
+    }
+
+    @ApiOperation("获取用户的所有设备")
+    @GetMapping("/devices")
+    public ResponseResult getDeviceList(UserDTO userDTO) throws Exception {
+        return ResponseResult.success(deviceService.listByUserDTO(userDTO));
     }
 
     @ApiOperation("获取监控AccessToken，用于监控视频接入")

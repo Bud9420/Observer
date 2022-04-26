@@ -15,14 +15,13 @@ public class YSOpenAPIConfig {
         YSOpenRequestInfo requestInfoDto = new YSOpenRequestInfo();
 
         requestInfoDto.setUrlOfAccessToken("https://open.ys7.com/api/lapp/token/get");
-
-        String paramsOfAccessToken = "appKey=%s&appSecret=%s";
-        requestInfoDto.setParamsOfAccessToken(paramsOfAccessToken);
+        requestInfoDto.setParamsOfAccessToken("appKey=%s&appSecret=%s");
 
         requestInfoDto.setUrlOfCapture("https://open.ys7.com/api/lapp/device/capture");
+        requestInfoDto.setParamsOfCapture("accessToken=%s&deviceSerial=%s&channelNo=%d");
 
-        String paramsOfCapture = "accessToken=%s&deviceSerial=%s&channelNo=%d";
-        requestInfoDto.setParamsOfCapture(paramsOfCapture);
+        requestInfoDto.setUrlOfDeviceInfo("https://open.ys7.com/api/lapp/device/info");
+        requestInfoDto.setParamsOfDeviceInfo("accessToken=%s&deviceSerial=%s");
 
         return requestInfoDto;
     }

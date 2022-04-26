@@ -26,5 +26,7 @@ public class PublicImg {
 
     private String status;
 
+    private String illegalType;
+
     private Integer deviceId;
 }

@@ -29,4 +29,10 @@ public class UserDTO {
 
     @ApiModelProperty("公司名")
     private String companyName;
+
+    @ApiModelProperty("萤石Open的AppKey")
+    private String appKey;
+
+    @ApiModelProperty("萤石Open的AppSecret")
+    private String appSecret;
 }

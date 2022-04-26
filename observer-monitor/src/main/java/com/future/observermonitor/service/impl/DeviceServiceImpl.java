@@ -3,17 +3,19 @@ package com.future.observermonitor.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.JacksonUtil;
+import com.future.observercommon.vo.DeviceVO;
 import com.future.observermonitor.mapper.DeviceMapper;
 import com.future.observermonitor.po.Device;
 import com.future.observermonitor.po.Secret;
 import com.future.observermonitor.service.DeviceService;
 import com.future.observermonitor.service.SecretService;
 import com.future.observermonitor.service.YSOpenService;
-import com.future.observermonitor.vo.DeviceVO;
+import com.future.observermonitor.vo.SecretVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,14 +35,46 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     private SecretService secretService;
 
     @Override
-    public List<DeviceVO> listByUserDTO(UserDTO userDTO) {
+    public List<DeviceVO> listByUserDTO(UserDTO userDTO) throws Exception {
         List<Device> deviceList = list(new QueryWrapper<Device>().eq("user_id", userDTO.getId()));
+
         List<DeviceVO> deviceVOList = new ArrayList<>();
+
         for (Device device : deviceList) {
+            DeviceDTO deviceDTO = new DeviceDTO();
+            BeanUtil.copyBeanProp(deviceDTO, device);
+            deviceDTO.setAppKey(userDTO.getAppKey());
+            deviceDTO.setAppSecret(userDTO.getAppSecret());
+
             DeviceVO deviceVO = new DeviceVO();
             BeanUtil.copyBeanProp(deviceVO, device);
+
+            // 获取监控设备的信息，返回json结果
+            String rs = (String) ysOpenService.getDeviceInfo(deviceDTO).getResult();
+
+            // 获取result失败
+            int returnCode = JacksonUtil.jsonNodeOf(rs, "code").asInt();
+            if (returnCode == 10002) {
+                // 重新获取accessToken
+                String accessToken = getAccessToken(deviceDTO);
+                deviceDTO.setAccessToken(accessToken);
+                // 重新抓取监控图片，返回json结果
+                rs = (String) ysOpenService.getDeviceInfo(deviceDTO).getResult();
+            }
+
+            /*
+             * 获取监控设备的信息，并保存至deviceVO
+             */
+            JsonNode data = JacksonUtil.jsonNodeOf(rs, "data");
+            String status = JacksonUtil.jsonNodeOf(data, "status").asInt() == 1 ? "在线" : "不在线";
+            String signal = JacksonUtil.jsonNodeOf(data, "signal").asText();
+
+            deviceVO.setStatus(status);
+            deviceVO.setDeviceSignal(signal);
+
             deviceVOList.add(deviceVO);
         }
+
         return deviceVOList;
     }
 

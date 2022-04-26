@@ -9,13 +9,13 @@ use observer;
 create table user_company
 (
     id              int primary key auto_increment,
-    create_time     datetime            not null,
-    update_time     datetime            not null,
-    name            varchar(255) unique not null,
-    license_path    varchar(255) unique not null,
-    legal_person    varchar(255)        not null,
-    phone           varchar(255) unique not null,
-    company_website varchar(255)
+    create_time     datetime         not null,
+    update_time     datetime         not null,
+    name            char(255) unique not null,
+    license_path    char(255) unique not null,
+    legal_person    char(255)        not null,
+    phone           char(255) unique not null,
+    company_website char(255)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
@@ -28,12 +28,12 @@ values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/softw
 create table user_userinfo
 (
     id          int primary key auto_increment,
-    create_time datetime            not null,
-    update_time datetime            not null,
-    username    varchar(255) unique not null,
-    password    varchar(255)        not null,
-    phone       varchar(255) unique not null,
-    head_path   varchar(255) unique not null,
+    create_time datetime         not null,
+    update_time datetime         not null,
+    username    char(255) unique not null,
+    password    char(255)        not null,
+    phone       char(255) unique not null,
+    head_path   char(255) unique not null,
     company_id  int,
     foreign key (company_id) references user_company (id)
 ) engine = InnoDB
@@ -50,12 +50,12 @@ values (1, now(), now(), 'chenxiaodeng', 'mbkpRtchTZJjoDGeV3NJ+Q==', '1992287729
 create table monitor_device
 (
     id            int primary key auto_increment,
-    create_time   datetime            not null,
-    update_time   datetime            not null,
-    name          varchar(255)        not null,
-    device_serial varchar(255) unique not null,
-    channel_no    int                 not null,
-    user_id       int                 not null,
+    create_time   datetime         not null,
+    update_time   datetime         not null,
+    name          char(255)        not null,
+    device_serial char(255) unique not null,
+    channel_no    int              not null,
+    user_id       int              not null,
     foreign key (user_id) references user_userinfo (id)
 ) engine = InnoDB
   charset utf8;
@@ -70,12 +70,12 @@ values (1, now(), now(), '重庆北站北广场检票口', 'F82272589', 1, 1);
 create table ysopen_secret
 (
     id           int primary key auto_increment,
-    create_time  datetime     not null,
-    update_time  datetime     not null,
-    app_key      varchar(255) not null,
-    app_secret   varchar(255) not null,
-    access_token varchar(255),
-    user_id      int unique   not null,
+    create_time  datetime   not null,
+    update_time  datetime   not null,
+    app_key      char(255)  not null,
+    app_secret   char(255)  not null,
+    access_token char(255),
+    user_id      int unique not null,
     foreign key (user_id) references user_userinfo (id)
 ) engine = InnoDB
   charset utf8;
@@ -98,34 +98,34 @@ create table monitor_public_standard
     loc_left           int,
     loc_top            int,
     # 人体属性
-    gender             varchar(255),
-    age                varchar(255),
-    upper_wear         varchar(255),
-    upper_color        varchar(255),
-    upper_wear_texture varchar(255),
-    upper_wear_fg      varchar(255),
-    lower_wear         varchar(255),
-    lower_color        varchar(255),
-    head_wear          varchar(255),
-    glasses            varchar(255),
-    bag                varchar(255),
-    face_mask          varchar(255),
-    orientation        varchar(255),
-    cellphone          varchar(255),
-    smoke              varchar(255),
-    carrying_item      varchar(255),
-    umbrella           varchar(255),
-    vehicle            varchar(255),
-    occlusion          varchar(255),
-    upper_cut          varchar(255),
-    lower_cut          varchar(255),
-    is_human           varchar(255)
+    gender             char(255),
+    age                char(255),
+    upper_wear         char(255),
+    upper_color        char(255),
+    upper_wear_texture char(255),
+    upper_wear_fg      char(255),
+    lower_wear         char(255),
+    lower_color        char(255),
+    head_wear          char(255),
+    glasses            char(255),
+    bag                char(255),
+    face_mask          char(255),
+    orientation        char(255),
+    cellphone          char(255),
+    smoke              char(255),
+    carrying_item      char(255),
+    umbrella           char(255),
+    vehicle            char(255),
+    occlusion          char(255),
+    upper_cut          char(255),
+    lower_cut          char(255),
+    is_human           char(255)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
 insert into monitor_public_standard
-    (id, create_time, update_time, face_mask, smoke, vehicle)
-values (1, now(), now(), '无口罩', '吸烟', '骑摩托车,骑自行车,骑三轮车');
+    (id, create_time, update_time, face_mask, cellphone, smoke, vehicle)
+values (1, now(), now(), '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车');
 
 # 监控设备与非法标准的联系
 create table monitor_public_device_standard
@@ -146,13 +146,14 @@ values (1, now(), now(), 1, 1);
 # 非法监控图像
 create table monitor_public_img
 (
-    id          int primary key auto_increment,
-    create_time datetime                                                                                    not null,
-    update_time datetime                                                                                    not null,
-    path        varchar(255) unique                                                                         not null,
+    id           int primary key auto_increment,
+    create_time  datetime                                                                                 not null,
+    update_time  datetime                                                                                 not null,
+    path         char(255) unique                                                                         not null,
     # 非法信息处理状态
-    status      varchar(255) default 'untreated' check (status in ('untreated', 'processing', 'processed')) not null,
-    device_id   int                                                                                         not null,
+    status       char(255) default 'untreated' check (status in ('untreated', 'processing', 'processed')) not null,
+    illegal_type char(255)                                                                                not null,
+    device_id    int                                                                                      not null,
     foreign key (device_id) references monitor_device (id)
 ) engine = InnoDB
   charset utf8;
@@ -161,40 +162,40 @@ create table monitor_public_img
 create table monitor_public_people
 (
     id                 int primary key auto_increment,
-    create_time        datetime                                                                              not null,
-    update_time        datetime                                                                              not null,
+    create_time        datetime                                                                           not null,
+    update_time        datetime                                                                           not null,
     # 每个人体框的信息
-    loc_height         int                                                                                   not null,
-    loc_width          int                                                                                   not null,
-    loc_left           int                                                                                   not null,
-    loc_top            int                                                                                   not null,
+    loc_height         int                                                                                not null,
+    loc_width          int                                                                                not null,
+    loc_left           int                                                                                not null,
+    loc_top            int                                                                                not null,
     # 人体属性
-    gender             varchar(255) check ( gender in ('男性', '女性', '不确定') )                                  not null,
-    age                varchar(255) check ( age in ('幼儿', '青少年', '青年', '中年', '老年', '不确定') )                  not null,
-    upper_wear         varchar(255) check ( upper_wear in ('长袖', '短袖', '不确定') )                              not null,
-    upper_color        varchar(255) check ( upper_color in
-                                            ('红', '橙', '黄', '绿', '蓝', '紫', '粉', '黑', '白', '灰', '棕', '不确定') ) not null,
-    upper_wear_texture varchar(255) check ( upper_wear_texture in ('纯色', '图案', '碎花', '条纹或格子', '不确定') )       not null,
-    upper_wear_fg      varchar(255) check ( upper_wear_fg in
-                                            ('T恤', '无袖', '衬衫', '西装', '毛衣', '夹克', '羽绒服', '风衣', '外套', '不确定') ) not null,
-    lower_wear         varchar(255) check ( lower_wear in ('长裤', '短裤', '长裙', '短裙', '不确定') )                  not null,
-    lower_color        varchar(255) check ( lower_color in
-                                            ('红', '橙', '黄', '绿', '蓝', '紫', '粉', '黑', '白', '灰', '棕', '不确定') ) not null,
-    head_wear          varchar(255) check ( head_wear in ('无帽', '普通帽', '安全帽', '不确定') )                       not null,
-    glasses            varchar(255) check ( glasses in ('戴眼镜', '戴墨镜', '无眼镜', '不确定') )                        not null,
-    bag                varchar(255) check ( bag in ('无背包', '单肩包', '双肩包', '不确定') )                            not null,
-    face_mask          varchar(255) check ( face_mask in ('无口罩', '戴口罩', '不确定') )                             not null,
-    orientation        varchar(255) check ( orientation in ('正面', '背面', '左侧面', '右侧面', '不确定') )               not null,
-    cellphone          varchar(255) check ( cellphone in ('未使用手机', '看手机', '打电话', '不确定') )                    not null,
-    smoke              varchar(255) check ( smoke in ('吸烟', '未吸烟', '不确定') )                                  not null,
-    carrying_item      varchar(255) check ( carrying_item in ('无手提物', '有手提物', '不确定') )                       not null,
-    umbrella           varchar(255) check ( umbrella in ('打伞', '未打伞', '不确定') )                               not null,
-    vehicle            varchar(255) check ( vehicle in ('无交通工具', '骑摩托车', '骑自行车', '骑三轮车', '不确定') )            not null,
-    occlusion          varchar(255) check ( occlusion in ('无遮挡', '轻度遮挡', '重度遮挡', '不确定') )                    not null,
-    upper_cut          varchar(255) check ( upper_cut in ('无上方截断', '有上方截断', '不确定') )                         not null,
-    lower_cut          varchar(255) check ( lower_cut in ('无下方截断', '有下方截断', '不确定') )                         not null,
-    is_human           varchar(255) check ( is_human in ('正常人体', '非正常人体', '不确定') )                           not null,
-    img_id             int                                                                                   not null,
+    gender             char(255) check ( gender in ('男性', '女性', '不确定') )                                  not null,
+    age                char(255) check ( age in ('幼儿', '青少年', '青年', '中年', '老年', '不确定') )                  not null,
+    upper_wear         char(255) check ( upper_wear in ('长袖', '短袖', '不确定') )                              not null,
+    upper_color        char(255) check ( upper_color in
+                                         ('红', '橙', '黄', '绿', '蓝', '紫', '粉', '黑', '白', '灰', '棕', '不确定') ) not null,
+    upper_wear_texture char(255) check ( upper_wear_texture in ('纯色', '图案', '碎花', '条纹或格子', '不确定') )       not null,
+    upper_wear_fg      char(255) check ( upper_wear_fg in
+                                         ('T恤', '无袖', '衬衫', '西装', '毛衣', '夹克', '羽绒服', '风衣', '外套', '不确定') ) not null,
+    lower_wear         char(255) check ( lower_wear in ('长裤', '短裤', '长裙', '短裙', '不确定') )                  not null,
+    lower_color        char(255) check ( lower_color in
+                                         ('红', '橙', '黄', '绿', '蓝', '紫', '粉', '黑', '白', '灰', '棕', '不确定') ) not null,
+    head_wear          char(255) check ( head_wear in ('无帽', '普通帽', '安全帽', '不确定') )                       not null,
+    glasses            char(255) check ( glasses in ('戴眼镜', '戴墨镜', '无眼镜', '不确定') )                        not null,
+    bag                char(255) check ( bag in ('无背包', '单肩包', '双肩包', '不确定') )                            not null,
+    face_mask          char(255) check ( face_mask in ('无口罩', '戴口罩', '不确定') )                             not null,
+    orientation        char(255) check ( orientation in ('正面', '背面', '左侧面', '右侧面', '不确定') )               not null,
+    cellphone          char(255) check ( cellphone in ('未使用手机', '看手机', '打电话', '不确定') )                    not null,
+    smoke              char(255) check ( smoke in ('吸烟', '未吸烟', '不确定') )                                  not null,
+    carrying_item      char(255) check ( carrying_item in ('无手提物', '有手提物', '不确定') )                       not null,
+    umbrella           char(255) check ( umbrella in ('打伞', '未打伞', '不确定') )                               not null,
+    vehicle            char(255) check ( vehicle in ('无交通工具', '骑摩托车', '骑自行车', '骑三轮车', '不确定') )            not null,
+    occlusion          char(255) check ( occlusion in ('无遮挡', '轻度遮挡', '重度遮挡', '不确定') )                    not null,
+    upper_cut          char(255) check ( upper_cut in ('无上方截断', '有上方截断', '不确定') )                         not null,
+    lower_cut          char(255) check ( lower_cut in ('无下方截断', '有下方截断', '不确定') )                         not null,
+    is_human           char(255) check ( is_human in ('正常人体', '非正常人体', '不确定') )                           not null,
+    img_id             int                                                                                not null,
     foreign key (img_id) references monitor_public_img (id)
 ) engine = InnoDB
   charset utf8;
@@ -267,12 +268,12 @@ values (1, now(), now(), 1, 1);
 create table monitor_driving_img
 (
     id          int primary key auto_increment,
-    create_time datetime                                                           not null,
-    update_time datetime                                                           not null,
-    path        varchar(255) unique                                                not null,
+    create_time datetime                                                        not null,
+    update_time datetime                                                        not null,
+    path        char(255) unique                                                not null,
     # 非法信息处理状态
-    status      varchar(255) default '未处理' check (status in ('未处理', '已处理', '处理中')) not null,
-    device_id   int                                                                not null,
+    status      char(255) default '未处理' check (status in ('未处理', '已处理', '处理中')) not null,
+    device_id   int                                                             not null,
     foreign key (device_id) references monitor_device (id)
 ) engine = InnoDB
   charset utf8;
@@ -326,9 +327,9 @@ create table monitor_driving_statis
 create table auth_role
 (
     id          int primary key auto_increment,
-    create_time datetime            not null,
-    update_time datetime            not null,
-    name        varchar(255) unique not null
+    create_time datetime         not null,
+    update_time datetime         not null,
+    name        char(255) unique not null
 ) engine = InnoDB
   charset utf8;
 # 插入初始数据
@@ -357,9 +358,9 @@ values (1, now(), now(), 1, 1),
 create table auth_permission
 (
     id          int primary key auto_increment,
-    create_time datetime            not null,
-    update_time datetime            not null,
-    name        varchar(255) unique not null
+    create_time datetime         not null,
+    update_time datetime         not null,
+    name        char(255) unique not null
 ) engine = InnoDB
   charset utf8;
 insert into auth_permission

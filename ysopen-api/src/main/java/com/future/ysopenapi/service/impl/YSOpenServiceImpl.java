@@ -54,4 +54,22 @@ public class YSOpenServiceImpl implements YSOpenService {
         // 发送post请求，获取响应结果并返回
         return HttpUtil.post(url, params);
     }
+
+    @Override
+    public String getDeviceInfo(DeviceDTO deviceDTO) throws Exception {
+        /*
+         * 请求地址和请求参数
+         */
+        // 请求地址
+        String url = ysOpenRequestInfo.getUrlOfDeviceInfo();
+        // 拼接请求参数
+        String params = String.format(
+                ysOpenRequestInfo.getParamsOfDeviceInfo(),
+                deviceDTO.getAccessToken(),
+                deviceDTO.getDeviceSerial()
+        );
+
+        // 发送post请求，获取响应结果并返回
+        return HttpUtil.post(url, params);
+    }
 }

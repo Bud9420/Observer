@@ -24,4 +24,13 @@ public interface YSOpenService {
      * @throws Exception Http请求异常
      */
     String capture(DeviceDTO deviceDTO) throws Exception;
+
+    /**
+     * <获取设备的状态信息>
+     *
+     * @param deviceDTO 监控设备DTO
+     * @return json响应结果
+     * @throws Exception Http请求异常
+     */
+    String getDeviceInfo(DeviceDTO deviceDTO) throws Exception;
 }

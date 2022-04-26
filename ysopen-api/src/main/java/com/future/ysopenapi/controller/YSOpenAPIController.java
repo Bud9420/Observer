@@ -27,4 +27,10 @@ public class YSOpenAPIController {
     public ResponseResult capture(@RequestBody DeviceDTO deviceDTO) throws Exception {
         return ResponseResult.success(ysOpenService.capture(deviceDTO));
     }
+
+    @ApiOperation("获取设备的状态信息，返回json结果")
+    @GetMapping("/device-info")
+    public ResponseResult getDeviceInfo(@RequestBody DeviceDTO deviceDTO) throws Exception {
+        return ResponseResult.success(ysOpenService.getDeviceInfo(deviceDTO));
+    }
 }

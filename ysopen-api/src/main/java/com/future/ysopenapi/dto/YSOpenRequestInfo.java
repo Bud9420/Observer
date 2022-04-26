@@ -29,4 +29,13 @@ public class YSOpenRequestInfo {
 
     // 请求参数
     private String paramsOfCapture;
+
+    /*
+     * 获取设备信息
+     */
+    // 请求URL
+    private String urlOfDeviceInfo;
+
+    // 请求参数
+    private String paramsOfDeviceInfo;
 }

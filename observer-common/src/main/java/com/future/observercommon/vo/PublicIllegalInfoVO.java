@@ -24,6 +24,9 @@ public class PublicIllegalInfoVO {
     @ApiModelProperty("非法信息处理状态")
     private String status;
 
+    @ApiModelProperty("非法类型")
+    private String illegalType;
+
     @ApiModelProperty("非法信息列表")
     private List<PublicPeopleVO> illegalInfoList;
 }
