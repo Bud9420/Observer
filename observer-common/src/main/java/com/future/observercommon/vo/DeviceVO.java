@@ -18,6 +18,9 @@ public class DeviceVO {
     @ApiModelProperty("通道号")
     private Integer channelNo;
 
+    @ApiModelProperty("应用场景名")
+    private String sceneName;
+
     @ApiModelProperty("设备名")
     private String name;
 

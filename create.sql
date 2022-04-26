@@ -46,6 +46,20 @@ values (1, now(), now(), 'chenxiaodeng', 'mbkpRtchTZJjoDGeV3NJ+Q==', '1992287729
 -- ----------------------------
 -- 2.监控
 -- ----------------------------
+# 应用场景
+create table monitor_scene
+(
+    id          int primary key auto_increment,
+    create_time datetime         not null,
+    update_time datetime         not null,
+    name        char(255) unique not null
+) engine = InnoDB
+  charset utf8;
+# 初始数据
+insert into monitor_scene
+values (1, now(), now(), '公共场所'),
+       (2, now(), now(), '驾驶行为');
+
 # 监控设备
 create table monitor_device
 (
@@ -56,12 +70,14 @@ create table monitor_device
     device_serial char(255) unique not null,
     channel_no    int              not null,
     user_id       int              not null,
-    foreign key (user_id) references user_userinfo (id)
+    scene_id      int              not null,
+    foreign key (user_id) references user_userinfo (id),
+    foreign key (scene_id) references monitor_scene (id)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
 insert into monitor_device
-values (1, now(), now(), '重庆北站北广场检票口', 'F82272589', 1, 1);
+values (1, now(), now(), '重庆北站北广场检票口', 'F82272589', 1, 1, 1);
 
 -- ----------------------------
 -- 3.萤石开放平台

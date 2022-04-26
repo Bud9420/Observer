@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@TableName("monitor_device")
+@TableName("monitor_scene")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Device {
+public class Scene {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -23,12 +23,4 @@ public class Device {
     private LocalDateTime updateTime;
 
     private String name;
-
-    private String deviceSerial;
-
-    private Integer channelNo;
-
-    private Integer userId;
-
-    private Integer sceneId;
 }
