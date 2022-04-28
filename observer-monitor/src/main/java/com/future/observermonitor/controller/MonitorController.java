@@ -2,11 +2,14 @@ package com.future.observermonitor.controller;
 
 import com.future.observercommon.constant.StatusCode;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.PublicStandardDTO;
+import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.vo.ResponseResult;
 import com.future.observermonitor.service.DeviceService;
 // import com.future.observermonitor.service.DrivingMonitorService;
 import com.future.observermonitor.service.PublicMonitorService;
+import com.future.observermonitor.service.SceneService;
 import com.future.observermonitor.service.SecretService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,11 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 
 @Api("监控的API")
 @RestController
 @RequestMapping("/monitor")
 public class MonitorController {
+
+    @Autowired
+    private SceneService sceneService;
 
     @Autowired
     private SecretService secretService;
@@ -31,6 +38,12 @@ public class MonitorController {
 
     // @Autowired
     // private DrivingMonitorService drivingMonitorService;
+
+    @ApiOperation("获取用户拥有的所有应用场景")
+    @GetMapping("/scene")
+    public ResponseResult getSceneList(UserDTO userDTO) {
+        return ResponseResult.success(sceneService.listByUserDTO(userDTO));
+    }
 
     @ApiOperation("获取用户的secret")
     @GetMapping("/secret")
@@ -72,7 +85,7 @@ public class MonitorController {
 
         switch (scene) {
             case "public":
-                return ResponseResult.success(publicMonitorService.illegalInfoVOList(deviceDTO).getResult());
+                return ResponseResult.success(publicMonitorService.getIllegalInfoAll(deviceDTO).getResult());
             case "driving":
                 // List<IllegalImgVo> drivingImgVos = monitorOfDrivingService.findImgsAll(user);
                 // return ResponseResult.success(map);
@@ -81,21 +94,33 @@ public class MonitorController {
         }
     }
 
-    // @ApiOperation(value = "获取非法统计信息", notes = "根据session中的user参数获取当前用户的非法统计信息")
-    // @ApiImplicitParam(name = "scene", value = "应用场景", required = true)
-    // @GetMapping("/statis/{scene}")
-    // public ResponseResult getStatis(@PathVariable String scene, HttpSession session) {
-    //     User user = (User) session.getAttribute("user");
-    //
-    //     switch (scene) {
-    //         case "public":
-    //             PublicStatis publicStatis = publicStatisService.getOne(new QueryWrapper<PublicStatis>().eq("user_id", user.getId()));
-    //             return ResponseResult.success(publicStatis);
-    //         case "driving":
-    //             DrivingStatis drivingStatis = drivingStatisService.getOne(new QueryWrapper<DrivingStatis>().eq("user_id", user.getId()));
-    //             return ResponseResult.success(drivingStatis);
-    //         default:
-    //             return ResponseResult.failure(StatusCode.BAD_REQUEST, "不存在应用场景" + scene);
-    //     }
-    // }
+    @ApiOperation("修改非法信息标准")
+    @PutMapping("/{scene}")
+    public ResponseResult putStandard(@PathVariable String scene, @RequestBody PublicStandardDTO publicStandardDTO) {
+        deviceService.getId(publicStandardDTO);
+
+        switch (scene) {
+            case "public":
+                publicMonitorService.putStandard(publicStandardDTO);
+                return ResponseResult.success();
+            case "driving":
+
+            default:
+                return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在该应用场景" + scene);
+        }
+    }
+
+    @ApiOperation(value = "获取非法统计信息")
+    @GetMapping("/statis/{scene}")
+    public ResponseResult getStatis(@PathVariable String scene, PublicStatisDTO publicStatisDTO) throws ParseException {
+        deviceService.getId(publicStatisDTO);
+
+        switch (scene) {
+            case "public":
+                return ResponseResult.success(publicMonitorService.getStatis(publicStatisDTO).getResult());
+            case "driving":
+            default:
+                return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在应用场景" + scene);
+        }
+    }
 }

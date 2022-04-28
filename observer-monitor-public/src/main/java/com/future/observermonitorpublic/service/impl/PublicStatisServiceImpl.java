@@ -2,13 +2,21 @@ package com.future.observermonitorpublic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.future.observermonitorpublic.dto.PublicStatisDTO;
+import com.future.observercommon.util.BeanUtil;
+import com.future.observercommon.util.DateUtil;
+import com.future.observercommon.vo.PublicStatisVO;
+import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observermonitorpublic.mapper.PublicStatisMapper;
 import com.future.observermonitorpublic.po.PublicStatis;
 import com.future.observermonitorpublic.service.PublicStatisService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -40,5 +48,29 @@ public class PublicStatisServiceImpl extends ServiceImpl<PublicStatisMapper, Pub
             statis.setUntreatedNum(statis.getUntreatedNum() + 1);
             updateById(statis);
         }
+    }
+
+    @Override
+    public List<PublicStatisVO> listByPublicStatisDTO(PublicStatisDTO publicStatisDTO) throws ParseException {
+        String[] dateRange = publicStatisDTO.getDateRange().split("->");
+
+        Date begin = DateUtil.toDate(dateRange[0], "yyyy-MM-dd");
+        Date end = DateUtil.toDate(dateRange[dateRange.length - 1], "yyyy-MM-dd");
+
+        List<PublicStatis> publicStatisList = list(new QueryWrapper<PublicStatis>()
+                .eq("device_id", publicStatisDTO.getDeviceId())
+                .between("date", begin, end)
+        );
+
+        List<PublicStatisVO> publicStatisVOList = new ArrayList<>(publicStatisList.size());
+
+        for (PublicStatis publicStatis : publicStatisList) {
+            PublicStatisVO publicStatisVO = new PublicStatisVO();
+            BeanUtil.copyBeanProp(publicStatisVO, publicStatis);
+
+            publicStatisVOList.add(publicStatisVO);
+        }
+
+        return publicStatisVOList;
     }
 }

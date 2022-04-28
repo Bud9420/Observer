@@ -2,6 +2,8 @@ package com.future.observermonitor.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.PublicStandardDTO;
+import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.vo.DeviceVO;
 import com.future.observermonitor.po.Device;
@@ -45,4 +47,18 @@ public interface DeviceService extends IService<Device> {
      * @param deviceDTO 监控设备DTO
      */
     void getId(DeviceDTO deviceDTO);
+
+    /**
+     * <通过设备序列号查找设备的主键id，并保存至publicStandardDTO>
+     *
+     * @param publicStandardDTO 公共场所非法信息标准DTO
+     */
+    void getId(PublicStandardDTO publicStandardDTO);
+
+    /**
+     * <通过设备序列号查找设备的主键id，并保存至publicStatisDTO>
+     *
+     * @param publicStatisDTO 公共场所非法统计信息DTO
+     */
+    void getId(PublicStatisDTO publicStatisDTO);
 }

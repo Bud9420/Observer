@@ -30,47 +30,71 @@ public class PublicStandard {
 
     private Integer locTop;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String gender;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String age;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String upperWear;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String upperColor;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String upperWearTexture;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String upperWearFg;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String lowerWear;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String lowerColor;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String headWear;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String glasses;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String bag;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String faceMask;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String orientation;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String cellphone;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String smoke;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String carryingItem;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String umbrella;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String vehicle;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String occlusion;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String upperCut;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String lowerCut;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String isHuman;
+
+    private Integer deviceId;
 }

@@ -1,6 +1,7 @@
 package com.future.observermonitorpublic.service;
 
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.PublicStandardDTO;
 import com.future.observercommon.vo.PublicIllegalInfoVO;
 
 import java.io.IOException;
@@ -32,4 +33,11 @@ public interface PublicMonitorService {
      * @throws IOException    监控图片获取异常
      */
     List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws ParseException, IOException;
+
+    /**
+     * <根据设备主键id更新非法信息标准>
+     *
+     * @param publicStandardDTO 公共场所非法信息标准DTO
+     */
+    void modifyStandard(PublicStandardDTO publicStandardDTO);
 }

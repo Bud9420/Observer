@@ -5,16 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.PublicStandardDTO;
+import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.JacksonUtil;
 import com.future.observercommon.vo.DeviceVO;
 import com.future.observermonitor.mapper.DeviceMapper;
-import com.future.observermonitor.mapper.SceneMapper;
 import com.future.observermonitor.po.Device;
 import com.future.observermonitor.po.Scene;
 import com.future.observermonitor.po.Secret;
 import com.future.observermonitor.service.DeviceService;
+import com.future.observermonitor.service.SceneService;
 import com.future.observermonitor.service.SecretService;
 import com.future.observermonitor.service.YSOpenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +32,14 @@ import java.util.List;
 public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implements DeviceService {
 
     @Autowired
+    private SceneService sceneService;
+
+    @Autowired
     @SuppressWarnings("all")
     private YSOpenService ysOpenService;
 
     @Autowired
     private SecretService secretService;
-
-    @Autowired
-    @SuppressWarnings("all")
-    private SceneMapper sceneMapper;
 
     @Override
     public List<DeviceVO> listByUserDTO(UserDTO userDTO) throws Exception {
@@ -59,7 +60,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             /*
              * 获取监控设备的应用场景名，并保存至deviceVO
              */
-            Scene scene = sceneMapper.selectOne(new QueryWrapper<Scene>().eq("id", device.getSceneId()));
+            Scene scene = sceneService.getOne(new QueryWrapper<Scene>().eq("id", device.getSceneId()));
             deviceVO.setSceneName(scene.getName());
 
             /*
@@ -135,5 +136,17 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     public void getId(DeviceDTO deviceDTO) {
         Device device = getOne(new QueryWrapper<Device>().eq("device_serial", deviceDTO.getDeviceSerial()));
         deviceDTO.setDeviceId(device.getId());
+    }
+
+    @Override
+    public void getId(PublicStandardDTO publicStandardDTO) {
+        Device device = getOne(new QueryWrapper<Device>().eq("device_serial", publicStandardDTO.getDeviceSerial()));
+        publicStandardDTO.setDeviceId(device.getId());
+    }
+
+    @Override
+    public void getId(PublicStatisDTO publicStatisDTO) {
+        Device device = getOne(new QueryWrapper<Device>().eq("device_serial", publicStatisDTO.getDeviceSerial()));
+        publicStatisDTO.setDeviceId(device.getId());
     }
 }

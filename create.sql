@@ -57,8 +57,26 @@ create table monitor_scene
   charset utf8;
 # 初始数据
 insert into monitor_scene
-values (1, now(), now(), '公共场所'),
-       (2, now(), now(), '驾驶行为');
+values (1, now(), now(), 'public'),
+       (2, now(), now(), 'driving');
+
+# 用户、应用场景的联系
+create table monitor_user_scene
+(
+    id          int primary key auto_increment,
+    create_time datetime not null,
+    update_time datetime not null,
+    user_id     int      not null,
+    scene_id    int      not null,
+    # 统计用户在当前应用场景下，拥有的监控设备总数量
+    device_num  int      not null,
+    foreign key (user_id) references user_userinfo (id),
+    foreign key (scene_id) references monitor_scene (id)
+) engine = InnoDB
+  charset utf8;
+# 初始数据
+insert into monitor_user_scene
+values (1, now(), now(), 1, 1, 1);
 
 # 监控设备
 create table monitor_device
@@ -71,8 +89,8 @@ create table monitor_device
     channel_no    int              not null,
     user_id       int              not null,
     scene_id      int              not null,
-    foreign key (user_id) references user_userinfo (id),
-    foreign key (scene_id) references monitor_scene (id)
+    foreign key (user_id) references monitor_user_scene (user_id),
+    foreign key (scene_id) references monitor_user_scene (scene_id)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
@@ -106,8 +124,8 @@ values (1, now(), now(), 'b66e5c4e3a46410e9ae59db9f00394df', '17317702d4275e5c34
 create table monitor_public_standard
 (
     id                 int primary key auto_increment,
-    create_time        datetime not null,
-    update_time        datetime not null,
+    create_time        datetime   not null,
+    update_time        datetime   not null,
     # 每个人体框的信息
     loc_height         int,
     loc_width          int,
@@ -135,29 +153,15 @@ create table monitor_public_standard
     occlusion          char(255),
     upper_cut          char(255),
     lower_cut          char(255),
-    is_human           char(255)
+    is_human           char(255),
+    device_id          int unique not null,
+    foreign key (device_id) references monitor_device (id)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
 insert into monitor_public_standard
-    (id, create_time, update_time, face_mask, cellphone, smoke, vehicle)
-values (1, now(), now(), '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车');
-
-# 监控设备与非法标准的联系
-create table monitor_public_device_standard
-(
-    id          int primary key auto_increment,
-    create_time datetime      not null,
-    update_time datetime      not null,
-    device_id   int unique    not null,
-    standard_id int default 1 not null,
-    foreign key (device_id) references monitor_device (id),
-    foreign key (standard_id) references monitor_public_standard (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
-insert into monitor_public_device_standard
-values (1, now(), now(), 1, 1);
+(id, create_time, update_time, face_mask, cellphone, smoke, vehicle, device_id)
+values (1, now(), now(), '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车', 1);
 
 # 非法监控图像
 create table monitor_public_img
@@ -239,8 +243,8 @@ create table monitor_public_statis
 create table monitor_driving_standard
 (
     id                       int primary key auto_increment,
-    create_time              datetime not null,
-    update_time              datetime not null,
+    create_time              datetime   not null,
+    update_time              datetime   not null,
     # 驾驶员的位置
     loc_height               int,
     loc_width                int,
@@ -255,30 +259,16 @@ create table monitor_driving_standard
     no_face_mask             int,
     yawning                  int,
     eyes_closed              int,
-    head_lowered             int
+    head_lowered             int,
+    device_id                int unique not null,
+    foreign key (device_id) references monitor_device (id)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
 insert into monitor_driving_standard
 (id, create_time, update_time, smoke, cellphone, not_buckling_up, both_hands_leaving_wheel, no_face_mask, yawning,
- head_lowered)
-values (1, now(), now(), 1, 1, 1, 1, 1, 1, 1);
-
-# 监控设备与非法标准的联系
-create table monitor_driving_user_standard
-(
-    id          int primary key auto_increment,
-    create_time datetime      not null,
-    update_time datetime      not null,
-    device_id   int unique    not null,
-    standard_id int default 1 not null,
-    foreign key (device_id) references monitor_device (id),
-    foreign key (standard_id) references monitor_driving_standard (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
-insert into monitor_driving_user_standard
-values (1, now(), now(), 1, 1);
+ head_lowered, device_id)
+values (1, now(), now(), 1, 1, 1, 1, 1, 1, 1, 1);
 
 # 非法监控图像
 create table monitor_driving_img

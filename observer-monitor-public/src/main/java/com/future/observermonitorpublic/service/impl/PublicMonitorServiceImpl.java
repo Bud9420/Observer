@@ -1,15 +1,17 @@
 package com.future.observermonitorpublic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.ImgBasePath;
+import com.future.observercommon.dto.PublicStandardDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.DateUtil;
 import com.future.observercommon.util.FileUtil;
 import com.future.observercommon.util.JacksonUtil;
-import com.future.observermonitorpublic.dto.PublicStatisDTO;
+import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observermonitorpublic.mapper.PublicImgMapper;
 import com.future.observermonitorpublic.mapper.PublicPeopleMapper;
 import com.future.observermonitorpublic.mapper.PublicStandardMapper;
@@ -63,7 +65,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         String detectionResult = (String) baiDuAIService.check(deviceDTO).getResult();
 
         // 获取监控设备的非法信息标准
-        PublicStandard standard = publicStandardMapper.selectOneByDeviceId(deviceDTO.getDeviceId());
+        PublicStandard standard = publicStandardMapper.selectOne(new QueryWrapper<PublicStandard>().eq("device_id", deviceDTO.getDeviceId()));
 
         // 当前图片的非法类型
         Set<String> illegalType = new HashSet<>();
@@ -231,7 +233,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             Field[] standardFields = PublicStandard.class.getDeclaredFields();
             Field[] peopleFields = PublicPeople.class.getDeclaredFields();
             boolean flag = false; // 表示当前人体信息是否非法
-            for (int j = 7; j < standardFields.length; j++) {
+            for (int j = 7; j < standardFields.length - 1; j++) {
                 standardFields[j].setAccessible(true);
                 peopleFields[j].setAccessible(true);
                 String standardField = (String) standardFields[j].get(standard);
@@ -271,7 +273,9 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                 // 非法统计
                 PublicStatisDTO publicStatisDTO = new PublicStatisDTO(
                         deviceDTO.getDeviceId(),
-                        DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd")
+                        null,
+                        DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd"),
+                        null
                 );
                 publicStatisService.add(publicStatisDTO);
             }
@@ -330,5 +334,14 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
         // 返回当前设备的所有非法监控图片及非法信息列表
         return publicIllegalInfoVOList;
+    }
+
+    @Override
+    public void modifyStandard(PublicStandardDTO publicStandardDTO) {
+        PublicStandard publicStandard = new PublicStandard();
+        BeanUtil.copyBeanProp(publicStandard, publicStandardDTO);
+        publicStandard.setDeviceId(null);
+
+        publicStandardMapper.update(publicStandard, new UpdateWrapper<PublicStandard>().eq("device_id", publicStandardDTO.getDeviceId()));
     }
 }
