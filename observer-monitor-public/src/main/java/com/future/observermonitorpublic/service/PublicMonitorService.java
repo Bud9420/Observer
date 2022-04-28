@@ -1,7 +1,6 @@
 package com.future.observermonitorpublic.service;
 
 import com.future.observercommon.dto.DeviceDTO;
-import com.future.observercommon.dto.PublicStandardDTO;
 import com.future.observercommon.vo.PublicIllegalInfoVO;
 
 import java.io.IOException;
@@ -14,17 +13,6 @@ import java.util.List;
 public interface PublicMonitorService {
 
     /**
-     * <调用百度AI接口检测图片>
-     * <根据非法信息标准，存储非法的图片及其检测信息，删除合法的图片>
-     * <返回非法信息>
-     *
-     * @param deviceDTO 监控设备DTO
-     * @return 非法信息VO
-     * @throws Exception baidu-ai服务异常或JSON解析异常
-     */
-    PublicIllegalInfoVO check(DeviceDTO deviceDTO) throws Exception;
-
-    /**
      * <获取当前设备的所有非法监控信息>
      *
      * @param deviceDTO 监控设备DTO
@@ -35,9 +23,13 @@ public interface PublicMonitorService {
     List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws ParseException, IOException;
 
     /**
-     * <根据设备主键id更新非法信息标准>
+     * <调用百度AI接口检测图片>
+     * <根据非法信息标准，存储非法的图片及其检测信息，删除合法的图片>
+     * <返回非法信息>
      *
-     * @param publicStandardDTO 公共场所非法信息标准DTO
+     * @param deviceDTO 监控设备DTO
+     * @return 非法信息VO
+     * @throws Exception baidu-ai服务异常或JSON解析异常
      */
-    void modifyStandard(PublicStandardDTO publicStandardDTO);
+    PublicIllegalInfoVO check(DeviceDTO deviceDTO) throws Exception;
 }

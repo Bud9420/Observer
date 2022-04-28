@@ -23,6 +23,30 @@ import java.util.List;
 public class PublicStatisServiceImpl extends ServiceImpl<PublicStatisMapper, PublicStatis> implements PublicStatisService {
 
     @Override
+    public List<PublicStatisVO> listByPublicStatisDTO(PublicStatisDTO publicStatisDTO) throws ParseException {
+        String[] dateRange = publicStatisDTO.getDateRange().split("->");
+
+        Date begin = DateUtil.toDate(dateRange[0], "yyyy-MM-dd");
+        Date end = DateUtil.toDate(dateRange[dateRange.length - 1], "yyyy-MM-dd");
+
+        List<PublicStatis> publicStatisList = list(new QueryWrapper<PublicStatis>()
+                .eq("device_id", publicStatisDTO.getDeviceId())
+                .between("date", begin, end)
+        );
+
+        List<PublicStatisVO> publicStatisVOList = new ArrayList<>(publicStatisList.size());
+
+        for (PublicStatis publicStatis : publicStatisList) {
+            PublicStatisVO publicStatisVO = new PublicStatisVO();
+            BeanUtil.copyBeanProp(publicStatisVO, publicStatis);
+
+            publicStatisVOList.add(publicStatisVO);
+        }
+
+        return publicStatisVOList;
+    }
+
+    @Override
     public void add(PublicStatisDTO publicStatisDTO) {
         /*
          * 根据用户id和统计日期，更新非法统计信息
@@ -48,29 +72,5 @@ public class PublicStatisServiceImpl extends ServiceImpl<PublicStatisMapper, Pub
             statis.setUntreatedNum(statis.getUntreatedNum() + 1);
             updateById(statis);
         }
-    }
-
-    @Override
-    public List<PublicStatisVO> listByPublicStatisDTO(PublicStatisDTO publicStatisDTO) throws ParseException {
-        String[] dateRange = publicStatisDTO.getDateRange().split("->");
-
-        Date begin = DateUtil.toDate(dateRange[0], "yyyy-MM-dd");
-        Date end = DateUtil.toDate(dateRange[dateRange.length - 1], "yyyy-MM-dd");
-
-        List<PublicStatis> publicStatisList = list(new QueryWrapper<PublicStatis>()
-                .eq("device_id", publicStatisDTO.getDeviceId())
-                .between("date", begin, end)
-        );
-
-        List<PublicStatisVO> publicStatisVOList = new ArrayList<>(publicStatisList.size());
-
-        for (PublicStatis publicStatis : publicStatisList) {
-            PublicStatisVO publicStatisVO = new PublicStatisVO();
-            BeanUtil.copyBeanProp(publicStatisVO, publicStatis);
-
-            publicStatisVOList.add(publicStatisVO);
-        }
-
-        return publicStatisVOList;
     }
 }

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel("SecretVO")
+@ApiModel("监控的应用场景VO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

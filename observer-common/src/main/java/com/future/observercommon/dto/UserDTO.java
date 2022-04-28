@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserDTO {
 
-    @ApiModelProperty("主键id")
-    private Integer id;
+    @ApiModelProperty("用户的主键id")
+    private Integer userId;
 
     @ApiModelProperty("用户名")
     private String username;

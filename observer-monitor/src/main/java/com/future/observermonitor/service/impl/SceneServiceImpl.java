@@ -28,7 +28,7 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     @Override
     public List<SceneVO> listByUserDTO(UserDTO userDTO) {
         // 根据用户id，获取UserScene列表
-        List<UserScene> userSceneList = userSceneMapper.selectList(new QueryWrapper<UserScene>().eq("user_id", userDTO.getId()));
+        List<UserScene> userSceneList = userSceneMapper.selectList(new QueryWrapper<UserScene>().eq("user_id", userDTO.getUserId()));
 
         List<SceneVO> sceneVOList = new ArrayList<>(userSceneList.size());
 

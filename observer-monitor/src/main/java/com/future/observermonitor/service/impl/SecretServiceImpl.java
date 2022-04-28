@@ -18,7 +18,7 @@ public class SecretServiceImpl extends ServiceImpl<SecretMapper, Secret> impleme
 
     @Override
     public SecretVO getOneByUserDTO(UserDTO userDTO) {
-        Secret secret = getOne(new QueryWrapper<Secret>().eq("user_id", userDTO.getId()));
+        Secret secret = getOne(new QueryWrapper<Secret>().eq("user_id", userDTO.getUserId()));
         SecretVO secretVO = new SecretVO();
         BeanUtil.copyBeanProp(secretVO, secret);
         return secretVO;

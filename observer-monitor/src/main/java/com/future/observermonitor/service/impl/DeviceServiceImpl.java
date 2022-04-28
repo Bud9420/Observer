@@ -44,7 +44,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Override
     public List<DeviceVO> listByUserDTO(UserDTO userDTO) throws Exception {
         // 根据用户id，获取监控设备列表
-        List<Device> deviceList = list(new QueryWrapper<Device>().eq("user_id", userDTO.getId()));
+        List<Device> deviceList = list(new QueryWrapper<Device>().eq("user_id", userDTO.getUserId()));
 
         List<DeviceVO> deviceVOList = new ArrayList<>();
 

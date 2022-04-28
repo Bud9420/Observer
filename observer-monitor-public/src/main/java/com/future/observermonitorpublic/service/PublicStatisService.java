@@ -11,14 +11,6 @@ import java.util.List;
 public interface PublicStatisService extends IService<PublicStatis> {
 
     /**
-     * <非法总数 + 1>
-     * <未处理的非法数 + 1>
-     *
-     * @param publicStatisDTO 非法统计信息DTO
-     */
-    void add(PublicStatisDTO publicStatisDTO);
-
-    /**
      * <获取非法统计数据>
      *
      * @param publicStatisDTO 非法统计信息DTO
@@ -26,4 +18,12 @@ public interface PublicStatisService extends IService<PublicStatis> {
      * @throws ParseException 日期解析异常
      */
     List<PublicStatisVO> listByPublicStatisDTO(PublicStatisDTO publicStatisDTO) throws ParseException;
+
+    /**
+     * <非法总数 + 1>
+     * <未处理的非法数 + 1>
+     *
+     * @param publicStatisDTO 非法统计信息DTO
+     */
+    void add(PublicStatisDTO publicStatisDTO);
 }

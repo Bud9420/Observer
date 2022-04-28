@@ -17,15 +17,18 @@ import java.text.ParseException;
 @Service
 public interface PublicMonitorService {
 
-    @PostMapping("/monitor-public")
-    ResponseResult check(@RequestBody DeviceDTO deviceDTO) throws Exception;
-
-    @GetMapping("/monitor-public")
+    @GetMapping("/monitor/public")
     ResponseResult getIllegalInfoAll(@RequestBody DeviceDTO deviceDTO);
 
-    @PutMapping("/monitor-public")
+    @PostMapping("/monitor/public")
+    ResponseResult check(@RequestBody DeviceDTO deviceDTO) throws Exception;
+
+    @GetMapping("/monitor/standards/public")
+    ResponseResult getStandard(@RequestBody DeviceDTO deviceDTO);
+
+    @PutMapping("/monitor/standards/public")
     ResponseResult putStandard(@RequestBody PublicStandardDTO publicStandardDTO);
 
-    @GetMapping("/monitor-public/statis")
+    @GetMapping("/monitor/statis/public")
     ResponseResult getStatis(@RequestBody PublicStatisDTO publicStatisDTO) throws ParseException;
 }

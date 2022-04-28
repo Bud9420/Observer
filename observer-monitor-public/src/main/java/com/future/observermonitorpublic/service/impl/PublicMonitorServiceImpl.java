@@ -1,12 +1,10 @@
 package com.future.observermonitorpublic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.ImgBasePath;
-import com.future.observercommon.dto.PublicStandardDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.DateUtil;
 import com.future.observercommon.util.FileUtil;
@@ -14,10 +12,10 @@ import com.future.observercommon.util.JacksonUtil;
 import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observermonitorpublic.mapper.PublicImgMapper;
 import com.future.observermonitorpublic.mapper.PublicPeopleMapper;
-import com.future.observermonitorpublic.mapper.PublicStandardMapper;
 import com.future.observermonitorpublic.po.*;
 import com.future.observermonitorpublic.service.BaiDuAIService;
 import com.future.observermonitorpublic.service.PublicMonitorService;
+import com.future.observermonitorpublic.service.PublicStandardService;
 import com.future.observermonitorpublic.service.PublicStatisService;
 import com.future.observercommon.vo.PublicIllegalInfoVO;
 import com.future.observercommon.vo.PublicPeopleVO;
@@ -40,11 +38,10 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private BaiDuAIService baiDuAIService;
 
     @Autowired
-    private PublicStatisService publicStatisService;
+    private PublicStandardService publicStandardService;
 
     @Autowired
-    @SuppressWarnings("all")
-    private PublicStandardMapper publicStandardMapper;
+    private PublicStatisService publicStatisService;
 
     @Autowired
     @SuppressWarnings("all")
@@ -58,6 +55,47 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private ImgBasePath imgBasePath;
 
     @Override
+    public List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
+        // 用于保存当前设备的所有非法监控图片及非法信息列表
+        List<PublicIllegalInfoVO> publicIllegalInfoVOList = new LinkedList<>();
+
+        // 获取所有非法监控图像
+        List<PublicImg> publicImgList = publicImgMapper.selectPage(
+                new Page<>(1, 20),
+                new QueryWrapper<PublicImg>()
+                        .eq("device_id", deviceDTO.getDeviceId())
+                        .orderByDesc("create_time")
+        ).getRecords();
+
+        // 获取每个非法监控图像对应的非法信息
+        for (PublicImg publicImg : publicImgList) {
+            List<PublicPeople> publicPeopleList = publicPeopleMapper.selectList(
+                    new QueryWrapper<PublicPeople>()
+                            .eq("img_id", publicImg.getId())
+            );
+            List<PublicPeopleVO> publicPeopleVOList = new LinkedList<>();
+            for (PublicPeople publicPeople : publicPeopleList) {
+                PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
+                BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
+                publicPeopleVOList.add(publicPeopleVO);
+            }
+
+            // 保存当前设备的当前非法监控图片及非法信息列表
+            PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO(
+                    publicImg.getCreateTime(),
+                    Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
+                    publicImg.getStatus(),
+                    publicImg.getIllegalType(),
+                    publicPeopleVOList
+            );
+            publicIllegalInfoVOList.add(publicIllegalInfoVO);
+        }
+
+        // 返回当前设备的所有非法监控图片及非法信息列表
+        return publicIllegalInfoVOList;
+    }
+
+    @Override
     public PublicIllegalInfoVO check(DeviceDTO deviceDTO) throws Exception {
         // 获取监控图片的字节流
         byte[] monitorImg = FileUtil.receiveFile(deviceDTO.getPicUrl());
@@ -65,7 +103,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         String detectionResult = (String) baiDuAIService.check(deviceDTO).getResult();
 
         // 获取监控设备的非法信息标准
-        PublicStandard standard = publicStandardMapper.selectOne(new QueryWrapper<PublicStandard>().eq("device_id", deviceDTO.getDeviceId()));
+        PublicStandard standard = publicStandardService.getOne(new QueryWrapper<PublicStandard>().eq("device_id", deviceDTO.getDeviceId()));
 
         // 当前图片的非法类型
         Set<String> illegalType = new HashSet<>();
@@ -293,55 +331,5 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         }
         publicIllegalInfoVO.setIllegalInfoList(publicPeopleVOList);
         return publicIllegalInfoVO;
-    }
-
-    @Override
-    public List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
-        // 用于保存当前设备的所有非法监控图片及非法信息列表
-        List<PublicIllegalInfoVO> publicIllegalInfoVOList = new LinkedList<>();
-
-        // 获取所有非法监控图像
-        List<PublicImg> publicImgList = publicImgMapper.selectPage(
-                new Page<>(1, 20),
-                new QueryWrapper<PublicImg>()
-                        .eq("device_id", deviceDTO.getDeviceId())
-                        .orderByDesc("create_time")
-        ).getRecords();
-
-        // 获取每个非法监控图像对应的非法信息
-        for (PublicImg publicImg : publicImgList) {
-            List<PublicPeople> publicPeopleList = publicPeopleMapper.selectList(
-                    new QueryWrapper<PublicPeople>()
-                            .eq("img_id", publicImg.getId())
-            );
-            List<PublicPeopleVO> publicPeopleVOList = new LinkedList<>();
-            for (PublicPeople publicPeople : publicPeopleList) {
-                PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
-                BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
-                publicPeopleVOList.add(publicPeopleVO);
-            }
-
-            // 保存当前设备的当前非法监控图片及非法信息列表
-            PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO(
-                    publicImg.getCreateTime(),
-                    Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
-                    publicImg.getStatus(),
-                    publicImg.getIllegalType(),
-                    publicPeopleVOList
-            );
-            publicIllegalInfoVOList.add(publicIllegalInfoVO);
-        }
-
-        // 返回当前设备的所有非法监控图片及非法信息列表
-        return publicIllegalInfoVOList;
-    }
-
-    @Override
-    public void modifyStandard(PublicStandardDTO publicStandardDTO) {
-        PublicStandard publicStandard = new PublicStandard();
-        BeanUtil.copyBeanProp(publicStandard, publicStandardDTO);
-        publicStandard.setDeviceId(null);
-
-        publicStandardMapper.update(publicStandard, new UpdateWrapper<PublicStandard>().eq("device_id", publicStandardDTO.getDeviceId()));
     }
 }

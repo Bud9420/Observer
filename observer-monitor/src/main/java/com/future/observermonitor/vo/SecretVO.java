@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel("SecretVO")
+@ApiModel("萤石开放平台的密钥VO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
