@@ -1,6 +1,7 @@
 package com.future.observermonitor.controller;
 
 import com.future.observercommon.constant.StatusCode;
+import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.PublicStandardDTO;
 import com.future.observercommon.vo.ResponseResult;
 import com.future.observermonitor.service.DeviceService;
@@ -18,6 +19,21 @@ public class StandardController {
 
     @Autowired
     private PublicMonitorService publicMonitorService;
+
+    @ApiOperation("获取非法信息标准")
+    @GetMapping("/{scene}")
+    public ResponseResult getStandard(@PathVariable String scene, DeviceDTO deviceDTO) {
+        deviceService.getId(deviceDTO);
+
+        switch (scene) {
+            case "public":
+                return ResponseResult.success(publicMonitorService.getStandard(deviceDTO).getResult());
+            case "driving":
+
+            default:
+                return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在该应用场景" + scene);
+        }
+    }
 
     @ApiOperation("修改非法信息标准")
     @PutMapping("/{scene}")

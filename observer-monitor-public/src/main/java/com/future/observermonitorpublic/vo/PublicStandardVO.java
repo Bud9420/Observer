@@ -2,8 +2,14 @@ package com.future.observermonitorpublic.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel("公共场所非法信息标准VO")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class PublicStandardVO {
 
     @ApiModelProperty("性别")
