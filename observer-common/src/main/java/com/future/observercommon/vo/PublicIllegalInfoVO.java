@@ -28,5 +28,5 @@ public class PublicIllegalInfoVO {
     private String illegalType;
 
     @ApiModelProperty("非法信息列表")
-    private List<PublicPeopleVO> illegalInfoList;
+    private List<PublicPeopleVO> list;
 }

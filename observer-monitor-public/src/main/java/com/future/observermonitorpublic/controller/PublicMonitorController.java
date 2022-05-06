@@ -19,10 +19,10 @@ public class PublicMonitorController {
     @Autowired
     private PublicMonitorService publicMonitorService;
 
-    @ApiOperation("获取非法监控图片及非法信息列表")
+    @ApiOperation("获取非法信息列表")
     @GetMapping
-    public ResponseResult getIllegalInfoAll(@RequestBody DeviceDTO deviceDTO) throws IOException, ParseException {
-        List<PublicIllegalInfoVO> illegalInfoVOList = publicMonitorService.findIllegalInfoAll(deviceDTO);
+    public ResponseResult getIllegalInfoList(@RequestBody DeviceDTO deviceDTO) throws IOException, ParseException {
+        List<PublicIllegalInfoVO> illegalInfoVOList = publicMonitorService.listOfIllegalInfo(deviceDTO);
         return ResponseResult.success(illegalInfoVOList);
     }
 

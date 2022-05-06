@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.observermonitorpublic.mapper.PublicStandardMapper">
+
+    <select id="selectOneByDeviceSerial" parameterType="string" resultType="PublicStandard">
+        select mps.*
+        from monitor_public_standard mps
+                 left join monitor_device md
+                           on mps.device_id = md.id
+        where md.device_serial = #{deviceSerial}
+    </select>
+
+    <update id="updateByDeviceSerial">
+        update monitor_public_standard
+        set
+            <if test="publicStandard.locHeight != null">
+            loc_height         = #{publicStandard.locHeight},
+            </if>
+            <if test="publicStandard.locWidth != null">
+            loc_width          = #{publicStandard.locWidth},
+            </if>
+            <if test="publicStandard.locLeft != null">
+            loc_left           = #{publicStandard.locLeft},
+            </if>
+            <if test="publicStandard.locTop != null">
+            loc_top            = #{publicStandard.locTop},
+            </if>
+            <if test="publicStandard.gender != null">
+            gender             = #{publicStandard.gender},
+            </if>
+            <if test="publicStandard.age != null">
+            age                = #{publicStandard.age},
+            </if>
+            <if test="publicStandard.upperWear != null">
+            upper_wear         = #{publicStandard.upperWear},
+            </if>
+            <if test="publicStandard.upperColor != null">
+            upper_color        = #{publicStandard.upperColor},
+            </if>
+            <if test="publicStandard.upperWearTexture != null">
+            upper_wear_texture = #{publicStandard.upperWearTexture},
+            </if>
+            <if test="publicStandard.upperWearFg != null">
+            upper_wear_fg      = #{publicStandard.upperWearFg},
+            </if>
+            <if test="publicStandard.lowerWear != null">
+            lower_wear         = #{publicStandard.lowerWear},
+            </if>
+            <if test="publicStandard.lowerColor != null">
+            lower_color        = #{publicStandard.lowerColor},
+            </if>
+            <if test="publicStandard.headWear != null">
+            head_wear          = #{publicStandard.headWear},
+            </if>
+            <if test="publicStandard.glasses != null">
+            glasses            = #{publicStandard.glasses},
+            </if>
+            <if test="publicStandard.bag != null">
+            bag                = #{publicStandard.bag},
+            </if>
+            <if test="publicStandard.faceMask != null">
+            face_mask          = #{publicStandard.faceMask},
+            </if>
+            <if test="publicStandard.orientation != null">
+            orientation        = #{publicStandard.orientation},
+            </if>
+            <if test="publicStandard.cellphone != null">
+            cellphone          = #{publicStandard.cellphone},
+            </if>
+            <if test="publicStandard.smoke != null">
+            smoke              = #{publicStandard.smoke},
+            </if>
+            <if test="publicStandard.carrying_item != null">
+            carrying_item      = #{publicStandard.carryingItem},
+            </if>
+            <if test="publicStandard.umbrella != null">
+            umbrella           = #{publicStandard.umbrella},
+            </if>
+            <if test="publicStandard.vehicle != null">
+            vehicle            = #{publicStandard.vehicle},
+            </if>
+            <if test="publicStandard.occlusion != null">
+            occlusion          = #{publicStandard.occlusion},
+            </if>
+            <if test="publicStandard.upper_cut != null">
+            upper_cut          = #{publicStandard.upperCut},
+            </if>
+            <if test="publicStandard.lower_cut != null">
+            lower_cut          = #{publicStandard.lowerCut},
+            </if>
+            <if test="publicStandard.is_human != null">
+            is_human           = #{publicStandard.isHuman},
+            </if>
+            <if test="publicStandard.device_id != null">
+            device_id          = #{publicStandard.deviceId},
+            </if>
+            where device_id = (select device_id from monitor_device where device_serial = #{deviceSerial})
+    </update>
+
+</mapper>

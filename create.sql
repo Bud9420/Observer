@@ -68,15 +68,13 @@ create table monitor_user_scene
     update_time datetime not null,
     user_id     int      not null,
     scene_id    int      not null,
-    # 统计用户在当前应用场景下，拥有的监控设备总数量
-    device_num  int      not null,
     foreign key (user_id) references user_userinfo (id),
     foreign key (scene_id) references monitor_scene (id)
 ) engine = InnoDB
   charset utf8;
 # 初始数据
 insert into monitor_user_scene
-values (1, now(), now(), 1, 1, 1);
+values (1, now(), now(), 1, 1);
 
 # 监控设备
 create table monitor_device
@@ -220,8 +218,24 @@ create table monitor_public_people
 ) engine = InnoDB
   charset utf8;
 
-# 非法信息的统计结果，以天为统计单位
-create table monitor_public_statis
+# 非法信息的统计结果，以天为统计单位，按用户进行统计
+create table monitor_public_statistic_user
+(
+    id             int primary key auto_increment,
+    create_time    datetime      not null,
+    update_time    datetime      not null,
+    date           date          not null,
+    total_num      int default 1 not null,
+    untreated_num  int default 1 not null,
+    processing_num int default 0 not null,
+    processed_num  int default 0 not null,
+    user_id        int           not null,
+    foreign key (user_id) references user_userinfo (id)
+) engine = InnoDB
+  charset utf8;
+
+# 非法信息的统计结果，以天为统计单位，按设备进行统计
+create table monitor_public_statistic_device
 (
     id             int primary key auto_increment,
     create_time    datetime      not null,
@@ -310,8 +324,24 @@ create table monitor_driving_driver
 ) engine = InnoDB
   charset utf8;
 
-# 非法信息的统计结果，以天为统计单位
-create table monitor_driving_statis
+# 非法信息的统计结果，以天为统计单位，按用户进行统计
+create table monitor_driving_statistic_user
+(
+    id             int primary key auto_increment,
+    create_time    datetime      not null,
+    update_time    datetime      not null,
+    date           date          not null,
+    total_num      int default 1 not null,
+    untreated_num  int default 1 not null,
+    processing_num int default 0 not null,
+    processed_num  int default 0 not null,
+    user_id        int           not null,
+    foreign key (user_id) references user_userinfo (id)
+) engine = InnoDB
+  charset utf8;
+
+# 非法信息的统计结果，以天为统计单位，按设备进行统计
+create table monitor_driving_statistic_device
 (
     id             int primary key auto_increment,
     create_time    datetime      not null,

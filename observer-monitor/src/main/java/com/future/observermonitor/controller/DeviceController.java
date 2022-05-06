@@ -19,6 +19,6 @@ public class DeviceController {
     @ApiOperation("获取用户的所有设备")
     @GetMapping
     public ResponseResult getDeviceList(UserDTO userDTO) throws Exception {
-        return ResponseResult.success(deviceService.listByUserDTO(userDTO));
+        return ResponseResult.success(deviceService.list(userDTO));
     }
 }

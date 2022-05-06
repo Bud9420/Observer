@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeviceVO {
 
+    @ApiModelProperty("设备名")
+    private String deviceName;
+
     @ApiModelProperty("设备序列号")
     private String deviceSerial;
 
@@ -21,11 +24,8 @@ public class DeviceVO {
     @ApiModelProperty("应用场景名")
     private String sceneName;
 
-    @ApiModelProperty("设备名")
-    private String name;
-
-    @ApiModelProperty("设备在线状态")
-    private String status;
+    @ApiModelProperty("设备在线状态，1表示在线，0表示离线")
+    private Integer status;
 
     @ApiModelProperty("设备信号")
     private String deviceSignal;

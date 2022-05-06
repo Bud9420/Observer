@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.observermonitorpublic.mapper.PublicStatisticForDeviceMapper">
+
+    <select id="selectListByDeviceSerial" resultType="PublicStatisticForDevice">
+        select mpsd.*
+        from monitor_public_statistic_device mpsd
+                 left join monitor_device md
+                           on mpsd.user_id = md.id
+        where md.device_serial = #{deviceSerial}
+          and (date between #{begin} and #{end})
+    </select>
+
+    <select id="selectOneByDeviceSerial" resultType="PublicStatisticForDevice">
+        select mpsd.*
+        from monitor_public_statistic_deivce mpsd
+                 left join monitor_device md
+                           on mpsd.user_id = md.id
+        where md.device_serial = #{deviceSerial}
+          and date = #{date}
+    </select>
+
+    <insert id="insertByDeviceSerial">
+        insert into monitor_public_statistic_device (date,
+                                                     total_num,
+                                                     untreated_num,
+                                                     processing_num,
+                                                     processed_num,
+                                                     device_id)
+        values (#{publicStatisticForDevice.date},
+                #{publicStatisticForDevice.totalNum},
+                #{publicStatisticForDevice.untreatedNum},
+                #{publicStatisticForDevice.processingNum},
+                #{publicStatisticForDevice.processedNum},
+                (select id from monitor_device where device_serial = #{deviceSerial}))
+    </insert>
+
+</mapper>

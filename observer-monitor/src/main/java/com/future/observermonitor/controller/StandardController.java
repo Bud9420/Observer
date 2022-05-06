@@ -15,16 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class StandardController {
 
     @Autowired
-    private DeviceService deviceService;
-
-    @Autowired
     private PublicMonitorService publicMonitorService;
 
     @ApiOperation("获取非法信息标准")
     @GetMapping("/{scene}")
     public ResponseResult getStandard(@PathVariable String scene, DeviceDTO deviceDTO) {
-        deviceService.getId(deviceDTO);
-
         switch (scene) {
             case "public":
                 return ResponseResult.success(publicMonitorService.getStandard(deviceDTO).getResult());
@@ -38,8 +33,6 @@ public class StandardController {
     @ApiOperation("修改非法信息标准")
     @PutMapping("/{scene}")
     public ResponseResult putStandard(@PathVariable String scene, @RequestBody PublicStandardDTO publicStandardDTO) {
-        deviceService.getId(publicStandardDTO);
-
         switch (scene) {
             case "public":
                 publicMonitorService.putStandard(publicStandardDTO);

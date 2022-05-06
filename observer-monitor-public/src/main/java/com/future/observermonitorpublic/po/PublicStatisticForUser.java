@@ -1,4 +1,4 @@
-package com.future.observermonitor.po;
+package com.future.observermonitorpublic.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
-@TableName("monitor_user_scene")
+@TableName("monitor_public_statistic_user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserScene {
+public class PublicStatisticForUser {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -22,9 +23,15 @@ public class UserScene {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    private Integer userId;
+    private Date date;
 
-    private Integer sceneId;
+    private Integer totalNum;
 
-    private Integer deviceNum;
+    private Integer untreatedNum;
+
+    private Integer processingNum;
+
+    private Integer processedNum;
+
+    public Integer userId;
 }

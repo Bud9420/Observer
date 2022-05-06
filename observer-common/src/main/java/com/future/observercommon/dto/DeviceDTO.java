@@ -12,21 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeviceDTO {
 
-    @ApiModelProperty("用户的主键id")
-    private Integer userId;
-
-    @ApiModelProperty("萤石开放平台的AppKey")
-    private String appKey;
-
-    @ApiModelProperty("萤石开放平台的AppSecret")
-    private String appSecret;
-
-    @ApiModelProperty("萤石开放平台的AccessToken")
-    private String accessToken;
-
-    @ApiModelProperty("设备的主键id")
-    private Integer deviceId;
-
     @ApiModelProperty("设备序列号")
     private String deviceSerial;
 
@@ -38,4 +23,10 @@ public class DeviceDTO {
 
     @ApiModelProperty("应用场景")
     private String scene;
+
+    @ApiModelProperty("用户名")
+    private String username;
+
+    @ApiModelProperty("萤石开放平台的AccessToken")
+    private String accessToken;
 }

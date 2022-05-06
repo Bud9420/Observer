@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PublicStatisVO {
+public class PublicStatisticVO {
 
     @ApiModelProperty("统计日期")
     private Date date;

@@ -9,16 +9,14 @@ import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.DateUtil;
 import com.future.observercommon.util.FileUtil;
 import com.future.observercommon.util.JacksonUtil;
-import com.future.observercommon.dto.PublicStatisDTO;
+import com.future.observercommon.dto.PublicStatisticDTO;
 import com.future.observermonitorpublic.mapper.PublicImgMapper;
 import com.future.observermonitorpublic.mapper.PublicPeopleMapper;
 import com.future.observermonitorpublic.po.*;
-import com.future.observermonitorpublic.service.BaiDuAIService;
-import com.future.observermonitorpublic.service.PublicMonitorService;
-import com.future.observermonitorpublic.service.PublicStandardService;
-import com.future.observermonitorpublic.service.PublicStatisService;
+import com.future.observermonitorpublic.service.*;
 import com.future.observercommon.vo.PublicIllegalInfoVO;
 import com.future.observercommon.vo.PublicPeopleVO;
+import com.future.observermonitorpublic.vo.PublicStandardVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,7 +39,10 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private PublicStandardService publicStandardService;
 
     @Autowired
-    private PublicStatisService publicStatisService;
+    private PublicStatisticForUserService publicStatisticForUserService;
+
+    @Autowired
+    private PublicStatisticForDeviceService publicStatisticForDeviceService;
 
     @Autowired
     @SuppressWarnings("all")
@@ -55,17 +56,12 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
     private ImgBasePath imgBasePath;
 
     @Override
-    public List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws IOException {
-        // 用于保存当前设备的所有非法监控图片及非法信息列表
+    public List<PublicIllegalInfoVO> listOfIllegalInfo(DeviceDTO deviceDTO) throws IOException {
+        // 用于保存当前设备的所有非法信息列表
         List<PublicIllegalInfoVO> publicIllegalInfoVOList = new LinkedList<>();
 
         // 获取所有非法监控图像
-        List<PublicImg> publicImgList = publicImgMapper.selectPage(
-                new Page<>(1, 20),
-                new QueryWrapper<PublicImg>()
-                        .eq("device_id", deviceDTO.getDeviceId())
-                        .orderByDesc("create_time")
-        ).getRecords();
+        List<PublicImg> publicImgList = publicImgMapper.selectPageByDeviceSerial(new Page<>(1, 20), deviceDTO.getDeviceSerial());
 
         // 获取每个非法监控图像对应的非法信息
         for (PublicImg publicImg : publicImgList) {
@@ -73,14 +69,16 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                     new QueryWrapper<PublicPeople>()
                             .eq("img_id", publicImg.getId())
             );
+
             List<PublicPeopleVO> publicPeopleVOList = new LinkedList<>();
             for (PublicPeople publicPeople : publicPeopleList) {
                 PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
                 BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
+
                 publicPeopleVOList.add(publicPeopleVO);
             }
 
-            // 保存当前设备的当前非法监控图片及非法信息列表
+            // 保存当前设备的当前非法信息列表
             PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO(
                     publicImg.getCreateTime(),
                     Base64Utils.encodeToString(FileUtil.readFileAsBytes(publicImg.getPath())),
@@ -91,7 +89,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             publicIllegalInfoVOList.add(publicIllegalInfoVO);
         }
 
-        // 返回当前设备的所有非法监控图片及非法信息列表
+        // 返回当前设备的所有非法信息列表
         return publicIllegalInfoVOList;
     }
 
@@ -103,7 +101,9 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         String detectionResult = (String) baiDuAIService.check(deviceDTO).getResult();
 
         // 获取监控设备的非法信息标准
-        PublicStandard standard = publicStandardService.getOne(new QueryWrapper<PublicStandard>().eq("device_id", deviceDTO.getDeviceId()));
+        PublicStandardVO publicStandardVO = publicStandardService.getOne(deviceDTO);
+        PublicStandard standard = new PublicStandard();
+        BeanUtil.copyBeanProp(standard,publicStandardVO);
 
         // 当前图片的非法类型
         Set<String> illegalType = new HashSet<>();
@@ -300,8 +300,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             PublicImg publicImg = new PublicImg();
             publicImg.setPath(illegalImg.getPath());
             publicImg.setIllegalType(s);
-            publicImg.setDeviceId(deviceDTO.getDeviceId());
-            publicImgMapper.insert(publicImg);
+            publicImgMapper.insertByDeviceSerial(publicImg, deviceDTO.getDeviceSerial());
 
             // 保存非法监控信息
             for (PublicPeople people : publicPeopleList) {
@@ -309,13 +308,14 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
                 publicPeopleMapper.insert(people);
 
                 // 非法统计
-                PublicStatisDTO publicStatisDTO = new PublicStatisDTO(
-                        deviceDTO.getDeviceId(),
+                PublicStatisticDTO publicStatisticDTO = new PublicStatisticDTO(
                         null,
+                        deviceDTO.getDeviceSerial(),
                         DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd"),
                         null
                 );
-                publicStatisService.add(publicStatisDTO);
+                publicStatisticForUserService.add(publicStatisticDTO);
+                publicStatisticForDeviceService.add(publicStatisticDTO);
             }
         }
 
@@ -323,13 +323,17 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
          * 返回非法信息
          */
         PublicIllegalInfoVO publicIllegalInfoVO = new PublicIllegalInfoVO();
+
         List<PublicPeopleVO> publicPeopleVOList = new ArrayList<>(publicPeopleList.size());
         for (PublicPeople publicPeople : publicPeopleList) {
             PublicPeopleVO publicPeopleVO = new PublicPeopleVO();
             BeanUtil.copyBeanProp(publicPeopleVO, publicPeople);
+
             publicPeopleVOList.add(publicPeopleVO);
         }
-        publicIllegalInfoVO.setIllegalInfoList(publicPeopleVOList);
+
+        publicIllegalInfoVO.setList(publicPeopleVOList);
+
         return publicIllegalInfoVO;
     }
 }

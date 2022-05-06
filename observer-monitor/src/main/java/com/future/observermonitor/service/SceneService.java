@@ -12,8 +12,8 @@ public interface SceneService extends IService<Scene> {
     /**
      * <获取用户拥有的所有应用场景>
      *
-     * @param userDTO 用户DTO
-     * @return 用户的所有应用场景
+     * @param userDTO userDTO
+     * @return 用户拥有的所有应用场景
      */
-    List<SceneVO> listByUserDTO(UserDTO userDTO);
+    List<SceneVO> list(UserDTO userDTO);
 }

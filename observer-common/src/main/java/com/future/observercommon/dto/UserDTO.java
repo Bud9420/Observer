@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserDTO {
 
-    @ApiModelProperty("用户的主键id")
-    private Integer userId;
-
     @ApiModelProperty("用户名")
     private String username;
 
@@ -29,10 +26,4 @@ public class UserDTO {
 
     @ApiModelProperty("公司名")
     private String companyName;
-
-    @ApiModelProperty("萤石Open的AppKey")
-    private String appKey;
-
-    @ApiModelProperty("萤石Open的AppSecret")
-    private String appSecret;
 }

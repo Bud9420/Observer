@@ -10,10 +10,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PublicStatisDTO {
+public class PublicStatisticDTO {
 
-    @ApiModelProperty("设备的主键id")
-    private Integer deviceId;
+    @ApiModelProperty("用户名")
+    private String username;
 
     @ApiModelProperty("设备序列号")
     private String deviceSerial;

@@ -20,7 +20,7 @@ public interface PublicMonitorService {
      * @throws ParseException JSON解析异常
      * @throws IOException    监控图片获取异常
      */
-    List<PublicIllegalInfoVO> findIllegalInfoAll(DeviceDTO deviceDTO) throws ParseException, IOException;
+    List<PublicIllegalInfoVO> listOfIllegalInfo(DeviceDTO deviceDTO) throws ParseException, IOException;
 
     /**
      * <调用百度AI接口检测图片>

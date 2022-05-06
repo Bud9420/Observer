@@ -1,4 +1,4 @@
-package com.future.observermonitor.vo;
+package com.future.observercommon.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,18 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel("萤石开放平台的密钥VO")
+@ApiModel("SecretDTO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SecretVO {
+public class SecretDTO {
 
-    @ApiModelProperty("AppKey")
+    @ApiModelProperty("萤石开放平台的AppKey")
     private String appKey;
 
-    @ApiModelProperty("AppSecret")
+    @ApiModelProperty("萤石开放平台的AppSecret")
     private String appSecret;
 
-    @ApiModelProperty("AccessToken")
+    @ApiModelProperty("萤石开放平台的AccessToken")
     private String accessToken;
 }

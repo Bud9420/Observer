@@ -1,6 +1,7 @@
 package com.future.ysopenapi.service.impl;
 
 import com.future.observercommon.dto.DeviceDTO;
+import com.future.observercommon.dto.SecretDTO;
 import com.future.observercommon.util.HttpUtil;
 import com.future.observercommon.util.JacksonUtil;
 import com.future.ysopenapi.dto.YSOpenRequestInfo;
@@ -15,7 +16,7 @@ public class YSOpenServiceImpl implements YSOpenService {
     private YSOpenRequestInfo ysOpenRequestInfo;
 
     @Override
-    public String getAccessToken(DeviceDTO deviceDTO) throws Exception {
+    public String getAccessToken(SecretDTO secretDTO) throws Exception {
         /*
          * 请求地址和请求参数
          */
@@ -24,8 +25,8 @@ public class YSOpenServiceImpl implements YSOpenService {
         // 拼接请求参数
         String params = String.format(
                 ysOpenRequestInfo.getParamsOfAccessToken(),
-                deviceDTO.getAppKey(),
-                deviceDTO.getAppSecret()
+                secretDTO.getAppKey(),
+                secretDTO.getAppSecret()
         );
 
         /*

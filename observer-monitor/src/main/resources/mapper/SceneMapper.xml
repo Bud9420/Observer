@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.observermonitor.mapper.SceneMapper">
+
+    <select id="selectOneByUsername" parameterType="string" resultType="Scene">
+        select ms.*
+        from monitor_scene ms
+                 left join monitor_user_scene mus
+                           on ms.id = mus.scene_id
+                 left join user_userinfo uu
+                           on uu.id = mus.user_id
+        where uu.username = #{username}
+    </select>
+
+</mapper>

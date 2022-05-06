@@ -90,9 +90,6 @@ public class PublicStandardDTO {
     @ApiModelProperty("是否是正常人体")
     private String isHuman;
 
-    @ApiModelProperty("设备的主键id")
-    private Integer deviceId;
-
     @ApiModelProperty("设备序列号")
     private String deviceSerial;
 }

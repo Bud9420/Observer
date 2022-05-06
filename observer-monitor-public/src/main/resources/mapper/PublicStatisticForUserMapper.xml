@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.observermonitorpublic.mapper.PublicStatisticForUserMapper">
+
+    <select id="selectListByUsername" resultType="PublicStatisticForUser">
+        select mpsu.*
+        from monitor_public_statistic_user mpsu
+                 left join user_userinfo uu
+                           on mpsu.user_id = uu.id
+        where uu.username = #{username}
+          and (date between #{begin} and #{end})
+    </select>
+
+    <select id="selectOneByUsername" resultType="PublicStatisticForUser">
+        select mpsu.*
+        from monitor_public_statistic_user mpsu
+                 left join user_userinfo uu
+                           on mpsu.user_id = uu.id
+        where uu.username = #{username}
+          and date = #{date}
+    </select>
+
+    <insert id="insertByUsername">
+        insert into monitor_public_statistic_user (date,
+                                                   total_num,
+                                                   untreated_num,
+                                                   processing_num,
+                                                   processed_num,
+                                                   user_id)
+        values (#{publicStatisticForUser.date},
+                #{publicStatisticForUser.totalNum},
+                #{publicStatisticForUser.untreatedNum},
+                #{publicStatisticForUser.processingNum},
+                #{publicStatisticForUser.processedNum},
+                (select id from user_userinfo where username = #{username}))
+    </insert>
+
+</mapper>

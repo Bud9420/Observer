@@ -18,13 +18,13 @@ public class PublicStandardController {
     @ApiOperation("获取非法信息标准")
     @GetMapping
     public ResponseResult getStandard(@RequestBody DeviceDTO deviceDTO) {
-        return ResponseResult.success(publicStandardService.getOneByDeviceDTO(deviceDTO));
+        return ResponseResult.success(publicStandardService.getOne(deviceDTO));
     }
 
     @ApiOperation("修改非法信息标准")
     @PutMapping
     public ResponseResult putStandard(@RequestBody PublicStandardDTO publicStandardDTO) {
-        publicStandardService.updateByPublicStandardDTO(publicStandardDTO);
+        publicStandardService.update(publicStandardDTO);
         return ResponseResult.success();
     }
 }

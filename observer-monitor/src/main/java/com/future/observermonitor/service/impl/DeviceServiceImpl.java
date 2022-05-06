@@ -1,12 +1,9 @@
 package com.future.observermonitor.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
-import com.future.observercommon.dto.PublicStandardDTO;
-import com.future.observercommon.dto.PublicStatisDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.JacksonUtil;
@@ -14,16 +11,13 @@ import com.future.observercommon.vo.DeviceVO;
 import com.future.observermonitor.mapper.DeviceMapper;
 import com.future.observermonitor.po.Device;
 import com.future.observermonitor.po.Scene;
-import com.future.observermonitor.po.Secret;
-import com.future.observermonitor.service.DeviceService;
-import com.future.observermonitor.service.SceneService;
-import com.future.observermonitor.service.SecretService;
-import com.future.observermonitor.service.YSOpenService;
+import com.future.observermonitor.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,19 +35,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Autowired
     private SecretService secretService;
 
+    @Autowired
+    @SuppressWarnings("all")
+    private DeviceMapper deviceMapper;
+
     @Override
-    public List<DeviceVO> listByUserDTO(UserDTO userDTO) throws Exception {
-        // 根据用户id，获取监控设备列表
-        List<Device> deviceList = list(new QueryWrapper<Device>().eq("user_id", userDTO.getUserId()));
+    public List<DeviceVO> list(UserDTO userDTO) throws Exception {
+        List<Device> deviceList = deviceMapper.selectOneByUsername(userDTO.getUsername());
 
-        List<DeviceVO> deviceVOList = new ArrayList<>();
+        // 根据用户名，获取监控AccessToken
+        String accessToken = secretService.getOne(userDTO).getAccessToken();
 
+        List<DeviceVO> deviceVOList = new ArrayList<>(deviceList.size());
         for (Device device : deviceList) {
-            DeviceDTO deviceDTO = new DeviceDTO();
-            BeanUtil.copyBeanProp(deviceDTO, device);
-            deviceDTO.setAppKey(userDTO.getAppKey());
-            deviceDTO.setAppSecret(userDTO.getAppSecret());
-
             DeviceVO deviceVO = new DeviceVO();
             BeanUtil.copyBeanProp(deviceVO, device);
 
@@ -66,6 +60,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             /*
              * 获取监控设备的状态信息，并保存至deviceVO
              */
+            // 封装DeviceDTO
+            DeviceDTO deviceDTO = new DeviceDTO();
+            BeanUtil.copyBeanProp(deviceDTO, device);
+            deviceDTO.setAccessToken(accessToken);
+
             // 请求获取监控设备的状态信息，返回json结果
             String rs = (String) ysOpenService.getDeviceInfo(deviceDTO).getResult();
 
@@ -73,15 +72,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             int returnCode = JacksonUtil.jsonNodeOf(rs, "code").asInt();
             if (returnCode == 10002) {
                 // 重新获取accessToken
-                String accessToken = getAccessToken(deviceDTO);
-                deviceDTO.setAccessToken(accessToken);
-                // 重新抓取监控图片，返回json结果
+                deviceDTO.setAccessToken(secretService.getAccessTokenAgain(userDTO));
+                // 重新获取监控设备的状态信息
                 rs = (String) ysOpenService.getDeviceInfo(deviceDTO).getResult();
             }
 
             // 解析json结果，获取监控设备的状态信息
             JsonNode data = JacksonUtil.jsonNodeOf(rs, "data");
-            String status = JacksonUtil.jsonNodeOf(data, "status").asInt() == 1 ? "在线" : "不在线";
+            Integer status = JacksonUtil.jsonNodeOf(data, "status").asInt();
             String signal = JacksonUtil.jsonNodeOf(data, "signal").asText();
 
             // 保存至deviceVO
@@ -95,22 +93,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     @Override
-    public String getAccessToken(DeviceDTO deviceDTO) throws Exception {
-        // 获取监控AccessToken
-        String accessToken = (String) ysOpenService.getAccessToken(deviceDTO).getResult();
-
-        // 根据设备号更新设备的AccessToken
-        secretService.update(null, new UpdateWrapper<Secret>()
-                .set("access_token", accessToken)
-                .eq("user_id", deviceDTO.getUserId())
-        );
-
-        // 返回AccessToken
-        return accessToken;
-    }
-
-    @Override
-    public void capture(DeviceDTO deviceDTO) throws Exception {
+    public void capture(DeviceDTO deviceDTO) throws ParseException, Exception {
         // 抓取监控图片，返回json结果
         String rs = (String) ysOpenService.capture(deviceDTO).getResult();
 
@@ -118,8 +101,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         int returnCode = JacksonUtil.jsonNodeOf(rs, "code").asInt();
         if (returnCode == 10002) {
             // 重新获取accessToken
-            String accessToken = getAccessToken(deviceDTO);
-            deviceDTO.setAccessToken(accessToken);
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUsername(deviceDTO.getUsername());
+            deviceDTO.setAccessToken(secretService.getAccessTokenAgain(userDTO));
             // 重新抓取监控图片，返回json结果
             rs = (String) ysOpenService.capture(deviceDTO).getResult();
         }
@@ -127,26 +111,5 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         // 获取监控图片的网络路径，并保存至deviceDTO
         String picUrl = JacksonUtil.jsonNodeOf(rs, "data", "picUrl").asText();
         deviceDTO.setPicUrl(picUrl);
-
-        // 获取监控设备的主键id，并保存至deviceDTO
-        getId(deviceDTO);
-    }
-
-    @Override
-    public void getId(DeviceDTO deviceDTO) {
-        Device device = getOne(new QueryWrapper<Device>().eq("device_serial", deviceDTO.getDeviceSerial()));
-        deviceDTO.setDeviceId(device.getId());
-    }
-
-    @Override
-    public void getId(PublicStandardDTO publicStandardDTO) {
-        Device device = getOne(new QueryWrapper<Device>().eq("device_serial", publicStandardDTO.getDeviceSerial()));
-        publicStandardDTO.setDeviceId(device.getId());
-    }
-
-    @Override
-    public void getId(PublicStatisDTO publicStatisDTO) {
-        Device device = getOne(new QueryWrapper<Device>().eq("device_serial", publicStatisDTO.getDeviceSerial()));
-        publicStatisDTO.setDeviceId(device.getId());
     }
 }

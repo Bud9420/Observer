@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@TableName("monitor_public_statis")
+@TableName("monitor_public_statistic_device")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PublicStatis {
+public class PublicStatisticForDevice {
 
     @TableId(type = IdType.AUTO)
     private Integer id;

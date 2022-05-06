@@ -14,7 +14,4 @@ public class SceneVO {
 
     @ApiModelProperty("应用场景名")
     private String sceneName;
-
-    @ApiModelProperty("用户在当前应用场景下，拥有的监控设备总数量")
-    private Integer deviceNum;
 }

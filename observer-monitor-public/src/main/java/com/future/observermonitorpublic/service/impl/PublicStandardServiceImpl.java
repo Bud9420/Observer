@@ -1,7 +1,5 @@
 package com.future.observermonitorpublic.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.PublicStandardDTO;
@@ -10,6 +8,7 @@ import com.future.observermonitorpublic.mapper.PublicStandardMapper;
 import com.future.observermonitorpublic.po.PublicStandard;
 import com.future.observermonitorpublic.service.PublicStandardService;
 import com.future.observermonitorpublic.vo.PublicStandardVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 public class PublicStandardServiceImpl extends ServiceImpl<PublicStandardMapper, PublicStandard> implements PublicStandardService {
 
+    @Autowired
+    @SuppressWarnings("all")
+    private PublicStandardMapper publicStandardMapper;
+
     @Override
-    public PublicStandardVO getOneByDeviceDTO(DeviceDTO deviceDTO) {
-        PublicStandard publicStandard = getOne(new QueryWrapper<PublicStandard>().eq("device_id", deviceDTO.getDeviceId()));
+    public PublicStandardVO getOne(DeviceDTO deviceDTO) {
+        PublicStandard publicStandard = publicStandardMapper.selectOneByDeviceSerial(deviceDTO.getDeviceSerial());
 
         PublicStandardVO publicStandardVO = new PublicStandardVO();
         BeanUtil.copyBeanProp(publicStandardVO, publicStandard);
@@ -29,10 +32,10 @@ public class PublicStandardServiceImpl extends ServiceImpl<PublicStandardMapper,
     }
 
     @Override
-    public void updateByPublicStandardDTO(PublicStandardDTO publicStandardDTO) {
+    public void update(PublicStandardDTO publicStandardDTO) {
         PublicStandard publicStandard = new PublicStandard();
         BeanUtil.copyBeanProp(publicStandard, publicStandardDTO);
 
-        update(publicStandard, new UpdateWrapper<PublicStandard>().eq("device_id", publicStandardDTO.getDeviceId()));
+        publicStandardMapper.updateByDeviceSerial(publicStandard, publicStandardDTO.getDeviceSerial());
     }
 }

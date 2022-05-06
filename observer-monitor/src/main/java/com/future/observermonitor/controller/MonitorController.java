@@ -29,17 +29,15 @@ public class MonitorController {
     @ApiOperation("获取用户拥有的所有应用场景")
     @GetMapping("/scenes")
     public ResponseResult getSceneList(UserDTO userDTO) {
-        return ResponseResult.success(sceneService.listByUserDTO(userDTO));
+        return ResponseResult.success(sceneService.list(userDTO));
     }
 
-    @ApiOperation("获取非法监控图片及非法信息列表")
+    @ApiOperation("获取非法信息列表")
     @GetMapping("/{scene}")
-    public ResponseResult getIllegalInfoAll(@PathVariable String scene, DeviceDTO deviceDTO) {
-        deviceService.getId(deviceDTO);
-
+    public ResponseResult getIllegalInfoList(@PathVariable String scene, DeviceDTO deviceDTO) {
         switch (scene) {
             case "public":
-                return ResponseResult.success(publicMonitorService.getIllegalInfoAll(deviceDTO).getResult());
+                return ResponseResult.success(publicMonitorService.getIllegalInfoList(deviceDTO).getResult());
             case "driving":
 
             default:

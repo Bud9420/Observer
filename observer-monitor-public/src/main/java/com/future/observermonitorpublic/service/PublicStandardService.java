@@ -9,17 +9,17 @@ import com.future.observermonitorpublic.vo.PublicStandardVO;
 public interface PublicStandardService extends IService<PublicStandard> {
 
     /**
-     * <根据设备id获取设备的非法信息标准>
+     * <根据设备序列号获取设备的非法信息标准>
      *
-     * @param deviceDTO 设备DTO
+     * @param deviceDTO deviceDTO
      * @return 设备的非法信息标准
      */
-    PublicStandardVO getOneByDeviceDTO(DeviceDTO deviceDTO);
+    PublicStandardVO getOne(DeviceDTO deviceDTO);
 
     /**
-     * <根据设备id更新设备的非法信息标准>
+     * <根据设备序列号更新设备的非法信息标准>
      *
-     * @param publicStandardDTO 公共场所非法信息标准DTO
+     * @param publicStandardDTO publicStandardDTO
      */
-    void updateByPublicStandardDTO(PublicStandardDTO publicStandardDTO);
+    void update(PublicStandardDTO publicStandardDTO);
 }
