@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class DeviceVO {
 
     @ApiModelProperty("设备名")
-    private String deviceName;
+    private String name;
 
     @ApiModelProperty("设备序列号")
     private String deviceSerial;

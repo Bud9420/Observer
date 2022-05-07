@@ -7,28 +7,32 @@
         select mpsd.*
         from monitor_public_statistic_device mpsd
                  left join monitor_device md
-                           on mpsd.user_id = md.id
+                           on mpsd.device_id = md.id
         where md.device_serial = #{deviceSerial}
           and (date between #{begin} and #{end})
     </select>
 
     <select id="selectOneByDeviceSerial" resultType="PublicStatisticForDevice">
         select mpsd.*
-        from monitor_public_statistic_deivce mpsd
+        from monitor_public_statistic_device mpsd
                  left join monitor_device md
-                           on mpsd.user_id = md.id
+                           on mpsd.device_id = md.id
         where md.device_serial = #{deviceSerial}
           and date = #{date}
     </select>
 
     <insert id="insertByDeviceSerial">
-        insert into monitor_public_statistic_device (date,
+        insert into monitor_public_statistic_device (create_time,
+                                                     update_time,
+                                                     date,
                                                      total_num,
                                                      untreated_num,
                                                      processing_num,
                                                      processed_num,
                                                      device_id)
-        values (#{publicStatisticForDevice.date},
+        values (now(),
+                now(),
+                #{publicStatisticForDevice.date},
                 #{publicStatisticForDevice.totalNum},
                 #{publicStatisticForDevice.untreatedNum},
                 #{publicStatisticForDevice.processingNum},

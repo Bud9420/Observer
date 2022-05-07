@@ -12,14 +12,16 @@
         order by mpi.create_time desc
     </select>
 
-    <insert id="insertByDeviceSerial">
-        insert into monitor_public_img (path,
-                                        status,
+    <insert id="insertByDeviceSerial" useGeneratedKeys="true" keyProperty="publicImg.id">
+        insert into monitor_public_img (create_time,
+                                        update_time,
+                                        path,
                                         illegal_type,
                                         device_id)
-        values (#{publicImg.path},
-                #{publicImg.status},
-                #{publicImg.illegal_type},
+        values (now(),
+                now(),
+                #{publicImg.path},
+                #{publicImg.illegalType},
                 (select id from monitor_device where device_serial = #{deviceSerial}))
     </insert>
 

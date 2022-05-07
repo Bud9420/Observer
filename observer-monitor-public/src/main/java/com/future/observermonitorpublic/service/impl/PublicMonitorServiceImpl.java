@@ -103,7 +103,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
         // 获取监控设备的非法信息标准
         PublicStandardVO publicStandardVO = publicStandardService.getOne(deviceDTO);
         PublicStandard standard = new PublicStandard();
-        BeanUtil.copyBeanProp(standard,publicStandardVO);
+        BeanUtil.copyBeanProp(standard, publicStandardVO);
 
         // 当前图片的非法类型
         Set<String> illegalType = new HashSet<>();
@@ -309,7 +309,7 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
                 // 非法统计
                 PublicStatisticDTO publicStatisticDTO = new PublicStatisticDTO(
-                        null,
+                        deviceDTO.getUsername(),
                         deviceDTO.getDeviceSerial(),
                         DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd"),
                         null

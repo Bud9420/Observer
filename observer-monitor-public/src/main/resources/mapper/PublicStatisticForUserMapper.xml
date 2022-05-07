@@ -22,13 +22,17 @@
     </select>
 
     <insert id="insertByUsername">
-        insert into monitor_public_statistic_user (date,
+        insert into monitor_public_statistic_user (create_time,
+                                                   update_time,
+                                                   date,
                                                    total_num,
                                                    untreated_num,
                                                    processing_num,
                                                    processed_num,
                                                    user_id)
-        values (#{publicStatisticForUser.date},
+        values (now(),
+                now(),
+                #{publicStatisticForUser.date},
                 #{publicStatisticForUser.totalNum},
                 #{publicStatisticForUser.untreatedNum},
                 #{publicStatisticForUser.processingNum},

@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class SceneVO {
 
     @ApiModelProperty("应用场景名")
-    private String sceneName;
+    private String name;
 }

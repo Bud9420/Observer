@@ -16,10 +16,9 @@ public class PublicImg {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 
     private String path;
