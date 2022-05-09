@@ -55,8 +55,6 @@ public class PublicStatisticForUserServiceImpl extends ServiceImpl<PublicStatist
             statistic.setDate(publicStatisticDTO.getDate());
             statistic.setTotalNum(1);
             statistic.setUntreatedNum(1);
-            statistic.setProcessingNum(0);
-            statistic.setProcessedNum(0);
             publicStatisticForUserMapper.insertByUsername(statistic, publicStatisticDTO.getUsername());
         } else {
             // 已统计过

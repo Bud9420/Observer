@@ -17,7 +17,7 @@ public class CommonConfig {
         imgBasePath.setPublicMonitorPath(imgBasePath.getMonitorPath() + "public/");
         imgBasePath.setDrivingMonitorPath(imgBasePath.getImgPath() + "driving/");
 
-        imgBasePath.setCompanyPath(imgBasePath.getImgPath() + "commpany/");
+        imgBasePath.setCompanyPath(imgBasePath.getImgPath() + "company/");
         imgBasePath.setCompanyLicensePath(imgBasePath.getCompanyPath() + "license/");
 
         imgBasePath.setUserPath(imgBasePath.getImgPath() + "user/");

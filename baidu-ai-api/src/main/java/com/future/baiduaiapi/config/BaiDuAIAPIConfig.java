@@ -19,8 +19,8 @@ public class BaiDuAIAPIConfig {
                 String.format(
                         "grant_type=%s&client_id=%s&client_secret=%s",
                         "client_credentials",
-                        "UhHirGcxb0Td337DKyyx3Vq4",
-                        "1okNz3NNfYfw2ASvhKq8i6SrrGUSI6hv"
+                        "qPxbmd9wggAuuFqIF9GuuAgs",
+                        "v3i9GbvBNbIAG5nteNULjyh0vju3MrQA"
                 )
         );
 
