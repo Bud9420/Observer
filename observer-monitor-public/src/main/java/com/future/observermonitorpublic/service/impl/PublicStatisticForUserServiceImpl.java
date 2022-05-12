@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,21 +48,30 @@ public class PublicStatisticForUserServiceImpl extends ServiceImpl<PublicStatist
     }
 
     @Override
-    public void add(PublicStatisticDTO publicStatisticDTO) {
-        PublicStatisticForUser statistic = publicStatisticForUserMapper.selectOneByUsername(publicStatisticDTO.getUsername(), publicStatisticDTO.getDate());
-        if (statistic == null) {
+    public void add(PublicStatisticDTO publicStatisticDTO) throws IllegalAccessException {
+        PublicStatisticForUser publicStatisticForUser = publicStatisticForUserMapper.selectOneByUsername(publicStatisticDTO.getUsername(), publicStatisticDTO.getDate());
+        if (publicStatisticForUser == null) {
             // 未统计过当前日期的非法信息
-            statistic = new PublicStatisticForUser();
-            statistic.setDate(publicStatisticDTO.getDate());
-            statistic.setTotalNum(1);
-            statistic.setUntreatedNum(1);
-            publicStatisticForUserMapper.insertByUsername(statistic, publicStatisticDTO.getUsername());
+            publicStatisticForUser = new PublicStatisticForUser();
+            BeanUtil.copyBeanProp(publicStatisticForUser, publicStatisticDTO);
+            publicStatisticForUserMapper.insertByUsername(publicStatisticForUser);
         } else {
             // 已统计过
-            statistic.setTotalNum(statistic.getTotalNum() + 1);
-            statistic.setUntreatedNum(statistic.getUntreatedNum() + 1);
-            statistic.setUserId(null);
-            updateById(statistic);
+            Field[] publicStatisticForUserFields = PublicStatisticForUser.class.getDeclaredFields();
+            Field[] publicStatisticDTOFields = PublicStatisticDTO.class.getDeclaredFields();
+            for (int i = 4; i < publicStatisticDTOFields.length; i++) {
+                publicStatisticForUserFields[i].setAccessible(true);
+                publicStatisticDTOFields[i].setAccessible(true);
+
+                Integer v1 = (Integer) publicStatisticForUserFields[i].get(publicStatisticForUser);
+                Integer v2 = (Integer) publicStatisticDTOFields[i].get(publicStatisticDTO);
+
+                publicStatisticForUserFields[i].set(
+                        publicStatisticForUser,
+                        v1 + v2
+                );
+            }
+            updateById(publicStatisticForUser);
         }
     }
 }

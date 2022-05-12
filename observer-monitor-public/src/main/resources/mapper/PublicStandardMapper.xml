@@ -11,90 +11,91 @@
         where md.device_serial = #{deviceSerial}
     </select>
 
-    <update id="updateByDeviceSerial">
+    <update id="updateByDeviceSerial" parameterType="PublicStandard">
         update monitor_public_standard
         <set>
-            update_time = now(),
-            <if test="publicStandard.locHeight != null">
-                loc_height = #{publicStandard.locHeight},
+            create_time = #{createTime},
+            update_time = #{updateTime},
+            <if test="locHeight != null">
+                loc_height = #{locHeight},
             </if>
-            <if test="publicStandard.locWidth != null">
-                loc_width = #{publicStandard.locWidth},
+            <if test="locWidth != null">
+                loc_width = #{locWidth},
             </if>
-            <if test="publicStandard.locLeft != null">
-                loc_left = #{publicStandard.locLeft},
+            <if test="locLeft != null">
+                loc_left = #{locLeft},
             </if>
-            <if test="publicStandard.locTop != null">
-                loc_top = #{publicStandard.locTop},
+            <if test="locTop != null">
+                loc_top = #{locTop},
             </if>
-            <if test="publicStandard.gender != null">
-                gender = #{publicStandard.gender},
+            <if test="gender != null">
+                gender = #{gender},
             </if>
-            <if test="publicStandard.age != null">
-                age = #{publicStandard.age},
+            <if test="age != null">
+                age = #{age},
             </if>
-            <if test="publicStandard.upperWear != null">
-                upper_wear = #{publicStandard.upperWear},
+            <if test="upperWear != null">
+                upper_wear = #{upperWear},
             </if>
-            <if test="publicStandard.upperColor != null">
-                upper_color = #{publicStandard.upperColor},
+            <if test="upperColor != null">
+                upper_color = #{upperColor},
             </if>
-            <if test="publicStandard.upperWearTexture != null">
-                upper_wear_texture = #{publicStandard.upperWearTexture},
+            <if test="upperWearTexture != null">
+                upper_wear_texture = #{upperWearTexture},
             </if>
-            <if test="publicStandard.upperWearFg != null">
-                upper_wear_fg = #{publicStandard.upperWearFg},
+            <if test="upperWearFg != null">
+                upper_wear_fg = #{upperWearFg},
             </if>
-            <if test="publicStandard.lowerWear != null">
-                lower_wear = #{publicStandard.lowerWear},
+            <if test="lowerWear != null">
+                lower_wear = #{lowerWear},
             </if>
-            <if test="publicStandard.lowerColor != null">
-                lower_color = #{publicStandard.lowerColor},
+            <if test="lowerColor != null">
+                lower_color = #{lowerColor},
             </if>
-            <if test="publicStandard.headWear != null">
-                head_wear = #{publicStandard.headWear},
+            <if test="headWear != null">
+                head_wear = #{headWear},
             </if>
-            <if test="publicStandard.glasses != null">
-                glasses = #{publicStandard.glasses},
+            <if test="glasses != null">
+                glasses = #{glasses},
             </if>
-            <if test="publicStandard.bag != null">
-                bag = #{publicStandard.bag},
+            <if test="bag != null">
+                bag = #{bag},
             </if>
-            <if test="publicStandard.faceMask != null">
-                face_mask = #{publicStandard.faceMask},
+            <if test="faceMask != null">
+                face_mask = #{faceMask},
             </if>
-            <if test="publicStandard.orientation != null">
-                orientation = #{publicStandard.orientation},
+            <if test="orientation != null">
+                orientation = #{orientation},
             </if>
-            <if test="publicStandard.cellphone != null">
-                cellphone = #{publicStandard.cellphone},
+            <if test="cellphone != null">
+                cellphone = #{cellphone},
             </if>
-            <if test="publicStandard.smoke != null">
-                smoke = #{publicStandard.smoke},
+            <if test="smoke != null">
+                smoke = #{smoke},
             </if>
-            <if test="publicStandard.carryingItem != null">
-                carrying_item = #{publicStandard.carryingItem},
+            <if test="carryingItem != null">
+                carrying_item = #{carryingItem},
             </if>
-            <if test="publicStandard.umbrella != null">
-                umbrella = #{publicStandard.umbrella},
+            <if test="umbrella != null">
+                umbrella = #{umbrella},
             </if>
-            <if test="publicStandard.vehicle != null">
-                vehicle = #{publicStandard.vehicle},
+            <if test="vehicle != null">
+                vehicle = #{vehicle},
             </if>
-            <if test="publicStandard.occlusion != null">
-                occlusion = #{publicStandard.occlusion},
+            <if test="occlusion != null">
+                occlusion = #{occlusion},
             </if>
-            <if test="publicStandard.upperCut != null">
-                upper_cut = #{publicStandard.upperCut},
+            <if test="upperCut != null">
+                upper_cut = #{upperCut},
             </if>
-            <if test="publicStandard.lowerCut != null">
-                lower_cut = #{publicStandard.lowerCut},
+            <if test="lowerCut != null">
+                lower_cut = #{lowerCut},
             </if>
-            <if test="publicStandard.isHuman != null">
-                is_human = #{publicStandard.isHuman},
+            <if test="isHuman != null">
+                is_human = #{isHuman},
             </if>
-            <if test="publicStandard.deviceId != null">
-                device_id = #{publicStandard.deviceId}
+            <if test="deviceId != null">
+                device_id = #{deviceId}
             </if>
         </set>
         where device_id = (select id from monitor_device where device_serial = #{deviceSerial})

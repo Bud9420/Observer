@@ -36,6 +36,6 @@ public class PublicStandardServiceImpl extends ServiceImpl<PublicStandardMapper,
         PublicStandard publicStandard = new PublicStandard();
         BeanUtil.copyBeanProp(publicStandard, publicStandardDTO);
 
-        publicStandardMapper.updateByDeviceSerial(publicStandard, publicStandardDTO.getDeviceSerial());
+        publicStandardMapper.updateByDeviceSerial(publicStandard);
     }
 }

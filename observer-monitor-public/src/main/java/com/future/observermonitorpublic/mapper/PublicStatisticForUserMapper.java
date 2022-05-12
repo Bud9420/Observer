@@ -20,8 +20,5 @@ public interface PublicStatisticForUserMapper extends BaseMapper<PublicStatistic
             @Param("date") Date date
     );
 
-    void insertByUsername(
-            @Param("publicStatisticForUser") PublicStatisticForUser publicStatisticForUser,
-            @Param("username") String username
-    );
+    void insertByUsername(PublicStatisticForUser publicStatisticForUser);
 }

@@ -17,8 +17,10 @@ public class PublicStatisticForDevice {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     private Date date;
@@ -76,4 +78,7 @@ public class PublicStatisticForDevice {
     private Integer isHumanNum;
 
     private Integer deviceId;
+
+    @TableField(exist = false)
+    private String deviceSerial;
 }

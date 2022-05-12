@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,24 +48,31 @@ public class PublicStatisticForDeviceServiceImpl extends ServiceImpl<PublicStati
     }
 
     @Override
-    public void add(PublicStatisticDTO publicStatisticDTO) {
-        PublicStatisticForDevice statistic = publicStatisticForDeviceMapper.selectOneByDeviceSerial(publicStatisticDTO.getDeviceSerial(), publicStatisticDTO.getDate());
+    public void add(PublicStatisticDTO publicStatisticDTO) throws IllegalAccessException {
+        PublicStatisticForDevice publicStatisticForDevice = publicStatisticForDeviceMapper.selectOneByDeviceSerial(publicStatisticDTO.getDeviceSerial(), publicStatisticDTO.getDate());
 
-        if (statistic == null) {
+        if (publicStatisticForDevice == null) {
             // 若之前未统计过当前日期的非法信息
-            statistic = new PublicStatisticForDevice();
-            statistic.setDate(publicStatisticDTO.getDate());
-            statistic.setTotalNum(1);
-            statistic.setUntreatedNum(1);
-            statistic.setProcessingNum(0);
-            statistic.setProcessedNum(0);
-            publicStatisticForDeviceMapper.insertByDeviceSerial(statistic,publicStatisticDTO.getDeviceSerial());
+            publicStatisticForDevice = new PublicStatisticForDevice();
+            BeanUtil.copyBeanProp(publicStatisticForDevice, publicStatisticDTO);
+            publicStatisticForDeviceMapper.insertByDeviceSerial(publicStatisticForDevice);
         } else {
             // 已统计过
-            statistic.setTotalNum(statistic.getTotalNum() + 1);
-            statistic.setUntreatedNum(statistic.getUntreatedNum() + 1);
-            statistic.setDeviceId(null);
-            updateById(statistic);
+            Field[] publicStatisticForDeviceFields = PublicStatisticForDevice.class.getDeclaredFields();
+            Field[] publicStatisticDTOFields = PublicStatisticDTO.class.getDeclaredFields();
+            for (int i = 4; i < publicStatisticDTOFields.length; i++) {
+                publicStatisticForDeviceFields[i].setAccessible(true);
+                publicStatisticDTOFields[i].setAccessible(true);
+
+                Integer v1 = (Integer) publicStatisticForDeviceFields[i].get(publicStatisticForDevice);
+                Integer v2 = (Integer) publicStatisticDTOFields[i].get(publicStatisticDTO);
+
+                publicStatisticForDeviceFields[i].set(
+                        publicStatisticForDevice,
+                        v1 + v2
+                );
+            }
+            updateById(publicStatisticForDevice);
         }
     }
 }

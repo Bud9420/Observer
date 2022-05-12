@@ -20,8 +20,5 @@ public interface PublicStatisticForDeviceMapper extends BaseMapper<PublicStatist
             @Param("date") Date date
     );
 
-    void insertByDeviceSerial(
-            @Param("publicStatisticForDevice") PublicStatisticForDevice publicStatisticForDevice,
-            @Param("deviceSerial") String deviceSerial
-    );
+    void insertByDeviceSerial(PublicStatisticForDevice publicStatisticForDevice);
 }

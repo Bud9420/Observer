@@ -16,9 +16,10 @@ public class PublicImg {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     private String path;
@@ -28,4 +29,7 @@ public class PublicImg {
     private String illegalType;
 
     private Integer deviceId;
+
+    @TableField(exist = false)
+    private String deviceSerial;
 }

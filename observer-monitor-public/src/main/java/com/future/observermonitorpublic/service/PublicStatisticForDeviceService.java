@@ -24,6 +24,7 @@ public interface PublicStatisticForDeviceService extends IService<PublicStatisti
      * <未处理的非法数 + 1>
      *
      * @param publicStatisticDTO publicStatisticDTO
+     * @throws IllegalAccessException 反射赋值异常
      */
-    void add(PublicStatisticDTO publicStatisticDTO);
+    void add(PublicStatisticDTO publicStatisticDTO) throws IllegalAccessException;
 }

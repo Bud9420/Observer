@@ -26,6 +26,7 @@ import org.springframework.util.Base64Utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -110,6 +111,9 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
 
         // 保存当前图片的非法检测信息
         LinkedList<PublicPeople> publicPeopleList = new LinkedList<>();
+
+        // 保存非法信息的统计结果
+        PublicStatisticDTO publicStatisticDTO = new PublicStatisticDTO();
 
         /*
          * 获取非法信息中的每个属性
@@ -270,14 +274,31 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
              */
             Field[] standardFields = PublicStandard.class.getDeclaredFields();
             Field[] peopleFields = PublicPeople.class.getDeclaredFields();
+            Field[] publicStatisticDTOFields = PublicStatisticDTO.class.getDeclaredFields();
             boolean flag = false; // 表示当前人体信息是否非法
-            for (int j = 7; j < standardFields.length - 1; j++) {
+            for (int j = 7; j < standardFields.length - 2; j++) {
                 standardFields[j].setAccessible(true);
                 peopleFields[j].setAccessible(true);
+                publicStatisticDTOFields[j + 1].setAccessible(true);
                 String standardField = (String) standardFields[j].get(standard);
                 String peopleField = (String) peopleFields[j].get(people);
                 if (standardField != null && standardField.contains(peopleField)) { // 出现非法信息
                     illegalType.add(peopleField);
+
+                    Integer value1 = (Integer) publicStatisticDTOFields[j + 1].get(publicStatisticDTO);
+                    publicStatisticDTOFields[j + 1].set(
+                            publicStatisticDTO,
+                            value1 == null ? 1 : value1 + 1
+                    );
+                    Integer value2 = publicStatisticDTO.getTotalNum();
+                    publicStatisticDTO.setTotalNum(
+                            value2 == null ? 1 : value2 + 1
+                    );
+                    Integer value3 = publicStatisticDTO.getUntreatedNum();
+                    publicStatisticDTO.setUntreatedNum(
+                            value3 == null ? 1 : value3 + 1
+                    );
+
                     flag = true;
                 }
             }
@@ -300,23 +321,21 @@ public class PublicMonitorServiceImpl implements PublicMonitorService {
             PublicImg publicImg = new PublicImg();
             publicImg.setPath(illegalImg.getPath());
             publicImg.setIllegalType(s);
-            publicImgMapper.insertByDeviceSerial(publicImg, deviceDTO.getDeviceSerial());
+            publicImg.setDeviceSerial(deviceDTO.getDeviceSerial());
+            publicImgMapper.insertByDeviceSerial(publicImg);
 
             // 保存非法监控信息
             for (PublicPeople people : publicPeopleList) {
                 people.setImgId(publicImg.getId());
                 publicPeopleMapper.insert(people);
-
-                // 非法统计
-                PublicStatisticDTO publicStatisticDTO = new PublicStatisticDTO(
-                        deviceDTO.getUsername(),
-                        deviceDTO.getDeviceSerial(),
-                        DateUtil.toDate(people.getCreateTime().toString(), "yyyy-MM-dd"),
-                        null
-                );
-                publicStatisticForUserService.add(publicStatisticDTO);
-                publicStatisticForDeviceService.add(publicStatisticDTO);
             }
+
+            // 非法统计
+            publicStatisticDTO.setUsername(deviceDTO.getUsername());
+            publicStatisticDTO.setDeviceSerial(deviceDTO.getDeviceSerial());
+            publicStatisticDTO.setDate(DateUtil.toDate(publicImg.getCreateTime().toString(), "yyyy-MM-dd"));
+            publicStatisticForDeviceService.add(publicStatisticDTO);
+            publicStatisticForUserService.add(publicStatisticDTO);
         }
 
         /*

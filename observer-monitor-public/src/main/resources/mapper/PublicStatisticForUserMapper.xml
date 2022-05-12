@@ -21,23 +21,155 @@
           and date = #{date}
     </select>
 
-    <insert id="insertByUsername">
-        insert into monitor_public_statistic_user (create_time,
-                                                   update_time,
-                                                   date,
-                                                   total_num,
-                                                   untreated_num,
-                                                   processing_num,
-                                                   processed_num,
-                                                   user_id)
-        values (now(),
-                now(),
-                #{publicStatisticForUser.date},
-                #{publicStatisticForUser.totalNum},
-                #{publicStatisticForUser.untreatedNum},
-                #{publicStatisticForUser.processingNum},
-                #{publicStatisticForUser.processedNum},
-                (select id from user_userinfo where username = #{username}))
+    <insert id="insertByUsername" parameterType="publicStatisticForUser">
+        insert into monitor_public_statistic_user (
+        create_time,
+        update_time,
+        date,
+        total_num,
+        untreated_num,
+        <if test="genderNum != null">
+            gender_num,
+        </if>
+        <if test="ageNum != null">
+            age_num,
+        </if>
+        <if test="upperWearNum != null">
+            upper_wear_num,
+        </if>
+        <if test="upperColorNum != null">
+            upper_color_num,
+        </if>
+        <if test="upperWearTextureNum != null">
+            upper_wear_texture_num,
+        </if>
+        <if test="upperWearFgNum != null">
+            upper_wear_fg_num,
+        </if>
+        <if test="lowerWearNum != null">
+            lower_wear_num,
+        </if>
+        <if test="lowerColorNum != null">
+            lower_color_num,
+        </if>
+        <if test="headWearNum != null">
+            head_wear_num,
+        </if>
+        <if test="glassesNum != null">
+            glasses_num,
+        </if>
+        <if test="bagNum != null">
+            bag_num,
+        </if>
+        <if test="faceMaskNum != null">
+            face_mask_num,
+        </if>
+        <if test="orientationNum != null">
+            orientation_num,
+        </if>
+        <if test="cellphoneNum != null">
+            cellphone_num,
+        </if>
+        <if test="smokeNum != null">
+            smoke_num,
+        </if>
+        <if test="carryingItemNum != null">
+            carrying_item_num,
+        </if>
+        <if test="umbrellaNum != null">
+            umbrella_num,
+        </if>
+        <if test="vehicleNum != null">
+            vehicle_num,
+        </if>
+        <if test="occlusionNum != null">
+            occlusion_num,
+        </if>
+        <if test="upperCutNum != null">
+            upper_cut_num,
+        </if>
+        <if test="lowerCutNum != null">
+            lower_cut_num,
+        </if>
+        <if test="isHumanNum != null">
+            is_human_num,
+        </if>
+        user_id
+        )
+        values (
+        #{createTime},
+        #{updateTime},
+        #{date},
+        #{totalNum},
+        #{untreatedNum},
+        <if test="genderNum != null">
+            #{genderNum},
+        </if>
+        <if test="ageNum != null">
+            #{ageNum},
+        </if>
+        <if test="upperWearNum != null">
+            #{upperWearNum},
+        </if>
+        <if test="upperColorNum != null">
+            #{upperColorNum},
+        </if>
+        <if test="upperWearTextureNum != null">
+            #{upperWearTextureNum},
+        </if>
+        <if test="upperWearFgNum != null">
+            #{upperWearFgNum},
+        </if>
+        <if test="lowerWearNum != null">
+            #{lowerWearNum},
+        </if>
+        <if test="lowerColorNum != null">
+            #{lowerColorNum},
+        </if>
+        <if test="headWearNum != null">
+            #{headWearNum},
+        </if>
+        <if test="glassesNum != null">
+            #{glassesNum},
+        </if>
+        <if test="bagNum != null">
+            #{bagNum},
+        </if>
+        <if test="faceMaskNum != null">
+            #{faceMaskNum},
+        </if>
+        <if test="orientationNum != null">
+            #{orientationNum},
+        </if>
+        <if test="cellphoneNum != null">
+            #{cellphoneNum},
+        </if>
+        <if test="smokeNum != null">
+            #{smokeNum},
+        </if>
+        <if test="carryingItemNum != null">
+            #{carryingItemNum},
+        </if>
+        <if test="umbrellaNum != null">
+            #{umbrellaNum},
+        </if>
+        <if test="vehicleNum != null">
+            #{vehicleNum},
+        </if>
+        <if test="occlusionNum != null">
+            #{occlusionNum},
+        </if>
+        <if test="upperCutNum != null">
+            #{upperCutNum},
+        </if>
+        <if test="lowerCutNum != null">
+            #{lowerCutNum},
+        </if>
+        <if test="isHumanNum != null">
+            #{isHumanNum},
+        </if>
+        (select id from user_userinfo where username = #{username})
+        )
     </insert>
 
 </mapper>
