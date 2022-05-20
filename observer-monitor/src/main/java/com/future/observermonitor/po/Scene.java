@@ -22,5 +22,57 @@ public class Scene {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    private String name;
+    private String sceneName;
+
+    private Integer locHeight;
+
+    private Integer locWidth;
+
+    private Integer locLeft;
+
+    private Integer locTop;
+
+    private String gender;
+
+    private String age;
+
+    private String upperWear;
+
+    private String upperColor;
+
+    private String upperWearTexture;
+
+    private String upperWearFg;
+
+    private String lowerWear;
+
+    private String lowerColor;
+
+    private String headWear;
+
+    private String glasses;
+
+    private String bag;
+
+    private String faceMask;
+
+    private String orientation;
+
+    private String cellphone;
+
+    private String smoke;
+
+    private String carryingItem;
+
+    private String umbrella;
+
+    private String vehicle;
+
+    private String occlusion;
+
+    private String upperCut;
+
+    private String lowerCut;
+
+    private String isHuman;
 }

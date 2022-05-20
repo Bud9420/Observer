@@ -28,12 +28,6 @@ public class ImgBasePath {
     // 根目录
     private String monitorPath;
 
-    // 存储公共场所非法监控图片的根目录
-    private String publicMonitorPath;
-
-    // 存储驾驶行为非法监控图片的根目录
-    private String drivingMonitorPath;
-
     /*
      * 存储企业信息
      */

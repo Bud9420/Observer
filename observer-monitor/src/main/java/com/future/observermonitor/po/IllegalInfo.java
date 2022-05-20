@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@TableName("monitor_device")
+@TableName("monitor_illegal_info")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Device {
+public class IllegalInfo {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -21,16 +21,6 @@ public class Device {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    private String deviceName;
-
-    private String deviceSerial;
-
-    private Integer channelNo;
-
-    private Integer userId;
-
-    private Integer sceneId;
 
     private Integer locHeight;
 
@@ -83,4 +73,6 @@ public class Device {
     private String lowerCut;
 
     private String isHuman;
+
+    private Integer imgId;
 }

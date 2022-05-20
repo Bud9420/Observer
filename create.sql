@@ -5,7 +5,7 @@ use observer;
 -- ----------------------------
 -- 1.用户
 -- ----------------------------
-# 企业
+-- 企业
 create table user_company
 (
     id              int primary key auto_increment,
@@ -16,15 +16,13 @@ create table user_company
     legal_person    char(255)        not null,
     company_phone   char(255) unique not null,
     company_website char(255)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+);
 insert into user_company
 values (1, now(), now(), '中国铁路成都局集团有限公司', '/root/software/observer/imgs/company/license/中国石油天然气集团有限公司/license.jpg',
         '冯定清',
         '028-86433080', 'http://www.cd-rail.cn');
 
-# 用户信息
+-- 用户信息
 create table user_userinfo
 (
     id          int primary key auto_increment,
@@ -36,9 +34,7 @@ create table user_userinfo
     head_path   char(255) unique not null,
     company_id  int,
     foreign key (company_id) references user_company (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+);
 insert into user_userinfo
 values (1, now(), now(), 'chenxiaodeng', 'mbkpRtchTZJjoDGeV3NJ+Q==', '19922877297',
         '/root/software/observer/imgs/user/head/chenxiaodeng/chenxiaodeng.jpg', 1);
@@ -46,27 +42,62 @@ values (1, now(), now(), 'chenxiaodeng', 'mbkpRtchTZJjoDGeV3NJ+Q==', '1992287729
 -- ----------------------------
 -- 2.监控
 -- ----------------------------
-# 监控场景
+-- 监控场景
 create table monitor_scene
 (
-    id          int primary key auto_increment,
-    create_time datetime         not null,
-    update_time datetime         not null,
-    name        char(255) unique not null
-) engine = InnoDB
-  charset utf8;
-# 初始数据
-insert into monitor_scene
-values (1, now(), now(), 'epidemic'),
-       (2, now(), now(), 'public'),
-       (3, now(), now(), 'driving');
+    id                 int primary key auto_increment,
+    create_time        datetime         not null,
+    update_time        datetime         not null,
+    scene_name         char(255) unique not null,
+    -- 非法标准
+    # 每个人体框的信息
+    loc_height         int,
+    loc_width          int,
+    loc_left           int,
+    loc_top            int,
+    # 人体属性
+    gender             char(255),
+    age                char(255),
+    upper_wear         char(255),
+    upper_color        char(255),
+    upper_wear_texture char(255),
+    upper_wear_fg      char(255),
+    lower_wear         char(255),
+    lower_color        char(255),
+    head_wear          char(255),
+    glasses            char(255),
+    bag                char(255),
+    face_mask          char(255),
+    orientation        char(255),
+    cellphone          char(255),
+    smoke              char(255),
+    carrying_item      char(255),
+    umbrella           char(255),
+    vehicle            char(255),
+    occlusion          char(255),
+    upper_cut          char(255),
+    lower_cut          char(255),
+    is_human           char(255)
+);
+insert into monitor_scene (id, create_time, update_time, scene_name, face_mask)
+values (1, now(), now(), 'epidemic', '无口罩');
+insert into monitor_scene(id, create_time, update_time, scene_name, cellphone, smoke)
+values (2, now(), now(), 'public', '看手机,打电话', '吸烟');
+insert into monitor_scene(id, create_time, update_time, scene_name, vehicle)
+values (3, now(), now(), 'driving', '骑摩托车,骑自行车,骑三轮车');
 
-# 信息非法的标准
-create table monitor_standard
+-- 监控设备
+create table monitor_device
 (
     id                 int primary key auto_increment,
-    create_time        datetime   not null,
-    update_time        datetime   not null,
+    create_time        datetime         not null,
+    update_time        datetime         not null,
+    device_name        char(255)        not null,
+    device_serial      char(255) unique not null,
+    channel_no         int              not null,
+    user_id            int              not null,
+    scene_id           int              not null,
+    -- 非法标准
     # 每个人体框的信息
     loc_height         int,
     loc_width          int,
@@ -95,50 +126,29 @@ create table monitor_standard
     upper_cut          char(255),
     lower_cut          char(255),
     is_human           char(255),
-    device_id          int unique not null,
-    foreign key (device_id) references monitor_device (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
-insert into monitor_public_standard
-(id, create_time, update_time, face_mask, cellphone, smoke, vehicle, device_id)
-values (1, now(), now(), '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车', 1);
-
-# 监控设备
-create table monitor_device
-(
-    id            int primary key auto_increment,
-    create_time   datetime         not null,
-    update_time   datetime         not null,
-    device_name   char(255)        not null,
-    device_serial char(255) unique not null,
-    channel_no    int              not null,
-    user_id       int              not null,
-    scene_id      int              not null,
-    foreign key (user_id) references monitor_user_scene (user_id),
-    foreign key (scene_id) references monitor_user_scene (scene_id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+    foreign key (user_id) references user_userinfo (id),
+    foreign key (scene_id) references monitor_scene (id)
+);
 insert into monitor_device
-values (1, now(), now(), '设备1', 'F82272589', 1, 1, 1);
+(id, create_time, update_time, device_name, device_serial, channel_no, user_id, scene_id, face_mask, cellphone, smoke,
+ vehicle)
+values (1, now(), now(), '演示设备', 'F82272589', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车');
 
-# 非法监控图像
+-- 非法监控图像
 create table monitor_img
 (
     id             int primary key auto_increment,
     create_time    datetime                                                                                         not null,
     update_time    datetime                                                                                         not null,
     path           char(255) unique                                                                                 not null,
-    process_status char(255) default 'untreated' check (process_status in ('untreated', 'processing', 'processed')) not null,
     illegal_type   char(255)                                                                                        not null,
+    process_status char(255) default 'untreated' check (process_status in ('untreated', 'processing', 'processed')) not null,
     device_id      int                                                                                              not null,
     foreign key (device_id) references monitor_device (id)
-) engine = InnoDB
-  charset utf8;
+);
 
-# 产生非法信息的对象—人
-create table monitor_people
+-- 非法信息
+create table monitor_illegal_info
 (
     id                 int primary key auto_increment,
     create_time        datetime                                                                           not null,
@@ -175,11 +185,10 @@ create table monitor_people
     lower_cut          char(255) check ( lower_cut in ('无下方截断', '有下方截断', '不确定') )                         not null,
     is_human           char(255) check ( is_human in ('正常人体', '非正常人体', '不确定') )                           not null,
     img_id             int                                                                                not null,
-    foreign key (img_id) references monitor_public_img (id)
-) engine = InnoDB
-  charset utf8;
+    foreign key (img_id) references monitor_img (id)
+);
 
-# 非法信息的统计结果，以天为统计单位，按用户进行统计
+-- 非法信息的统计结果，以天为统计单位，按用户进行统计
 create table monitor_statistic_user
 (
     id                     int primary key auto_increment,
@@ -214,10 +223,9 @@ create table monitor_statistic_user
     is_human_num           int default 0 not null,
     user_id                int           not null,
     foreign key (user_id) references user_userinfo (id)
-) engine = InnoDB
-  charset utf8;
+);
 
-# 非法信息的统计结果，以天为统计单位，按设备进行统计
+-- 非法信息的统计结果，以天为统计单位，按设备进行统计
 create table monitor_statistic_device
 (
     id                     int primary key auto_increment,
@@ -252,13 +260,12 @@ create table monitor_statistic_device
     is_human_num           int default 0 not null,
     device_id              int           not null,
     foreign key (device_id) references monitor_device (id)
-) engine = InnoDB
-  charset utf8;
+);
 
 -- ----------------------------
 -- 3.萤石开放平台
 -- ----------------------------
-# 应用密钥
+-- 应用密钥
 create table ysopen_secret
 (
     id           int primary key auto_increment,
@@ -269,30 +276,26 @@ create table ysopen_secret
     access_token char(255),
     user_id      int unique not null,
     foreign key (user_id) references user_userinfo (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+);
 insert into ysopen_secret
 values (1, now(), now(), 'b66e5c4e3a46410e9ae59db9f00394df', '17317702d4275e5c34c3d03f0244df75', null, 1);
 
 -- ----------------------------
 -- 4.权限
 -- ----------------------------
-# 角色
+-- 角色
 create table auth_role
 (
     id          int primary key auto_increment,
     create_time datetime         not null,
     update_time datetime         not null,
-    name        char(255) unique not null
-) engine = InnoDB
-  charset utf8;
-# 插入初始数据
+    role_name        char(255) unique not null
+);
 insert into auth_role
 values (1, now(), now(), 'monitor_public_user'),
        (2, now(), now(), 'monitor_driving_user');
 
-# 用户与角色的联系
+-- 用户与角色的联系
 create table auth_user_role
 (
     id          int primary key auto_increment,
@@ -302,20 +305,18 @@ create table auth_user_role
     role_id     int      not null,
     foreign key (user_id) references user_userinfo (id),
     foreign key (role_id) references auth_role (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+);
 insert into auth_user_role
 values (1, now(), now(), 1, 1),
        (2, now(), now(), 1, 2);
 
-# 权限
+-- 权限
 create table auth_permission
 (
     id          int primary key auto_increment,
     create_time datetime         not null,
     update_time datetime         not null,
-    name        char(255) unique not null
+    permission_name        char(255) unique not null
 ) engine = InnoDB
   charset utf8;
 insert into auth_permission
@@ -328,7 +329,7 @@ values (1, now(), now(), 'monitor_public:insert'),
        (7, now(), now(), 'monitor_driving:update'),
        (8, now(), now(), 'monitor_driving:select');
 
-# 角色与权限的联系
+-- 角色与权限的联系
 create table auth_role_permission
 (
     id            int primary key auto_increment,
@@ -338,9 +339,7 @@ create table auth_role_permission
     permission_id int      not null,
     foreign key (role_id) references auth_role (id),
     foreign key (permission_id) references auth_permission (id)
-) engine = InnoDB
-  charset utf8;
-# 初始数据
+);
 insert into auth_role_permission
 values (1, now(), now(), 1, 1),
        (2, now(), now(), 1, 2),
@@ -350,4 +349,3 @@ values (1, now(), now(), 1, 1),
        (6, now(), now(), 2, 2),
        (7, now(), now(), 2, 3),
        (8, now(), now(), 2, 4);
-

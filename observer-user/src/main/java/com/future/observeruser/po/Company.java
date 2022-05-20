@@ -22,13 +22,13 @@ public class Company {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    private String name;
+    private String companyName;
 
     private String licensePath;
 
     private String legalPerson;
 
-    private String phone;
+    private String companyPhone;
 
     private String companyWebsite;
 }

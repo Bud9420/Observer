@@ -1,4 +1,4 @@
-package com.future.observeruser.po;
+package com.future.observermonitor.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@TableName("auth_role")
+@TableName("monitor_img")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Role {
+public class Img {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -22,5 +22,14 @@ public class Role {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    private String roleName;
+    private String path;
+
+    private String illegalType;
+
+    private String processStatus;
+
+    private Integer deviceId;
+
+    @TableField(exist = false)
+    private String deviceSerial;
 }

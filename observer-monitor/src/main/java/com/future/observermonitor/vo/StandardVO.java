@@ -1,4 +1,4 @@
-package com.future.observercommon.dto;
+package com.future.observermonitor.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,41 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel("监控设备DTO")
+@ApiModel("非法信息标准VO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class DeviceDTO {
-
-    @ApiModelProperty("设备序列号")
-    private String deviceSerial;
-
-    @ApiModelProperty("通道号")
-    private Integer channelNo;
-
-    @ApiModelProperty("监控图片的网络路径")
-    private String picUrl;
-
-    @ApiModelProperty("用户名")
-    private String username;
-
-    @ApiModelProperty("应用场景")
-    private String scene;
-
-    @ApiModelProperty("萤石开放平台的AccessToken")
-    private String accessToken;
-
-    @ApiModelProperty("人体区域的高度")
-    private Integer locHeight;
-
-    @ApiModelProperty("人体区域的宽度")
-    private Integer locWidth;
-
-    @ApiModelProperty("人体区域离左边界的距离")
-    private Integer locLeft;
-
-    @ApiModelProperty("人体区域离左边界的距离")
-    private Integer locTop;
+public class StandardVO {
 
     @ApiModelProperty("性别")
     private String gender;

@@ -31,7 +31,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         Company company = new Company();
         BeanUtil.copyBeanProp(company, companyDTO);
         // 保存营业执照
-        String path = imgBasePath.getCompanyLicensePath() + company.getName() + "/" + company.getName() + ".jpg";
+        String path = imgBasePath.getCompanyLicensePath() + company.getCompanyName() + "/" + company.getCompanyName() + ".jpg";
         FileUtil.createFile(Base64Utils.decodeFromString(companyDTO.getLicense()), path);
         company.setLicensePath(path);
         save(company);

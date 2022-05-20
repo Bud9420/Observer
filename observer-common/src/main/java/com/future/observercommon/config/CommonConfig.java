@@ -14,8 +14,6 @@ public class CommonConfig {
         imgBasePath.setImgPath("E:/root/software/observer/imgs/");
 
         imgBasePath.setMonitorPath(imgBasePath.getImgPath() + "monitor/");
-        imgBasePath.setPublicMonitorPath(imgBasePath.getMonitorPath() + "public/");
-        imgBasePath.setDrivingMonitorPath(imgBasePath.getImgPath() + "driving/");
 
         imgBasePath.setCompanyPath(imgBasePath.getImgPath() + "company/");
         imgBasePath.setCompanyLicensePath(imgBasePath.getCompanyPath() + "license/");

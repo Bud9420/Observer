@@ -1,16 +1,16 @@
 package com.future.observermonitor.controller;
 
-import com.future.observercommon.constant.StatusCode;
 import com.future.observercommon.dto.DeviceDTO;
-import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.vo.ResponseResult;
 import com.future.observermonitor.service.DeviceService;
-import com.future.observermonitor.service.PublicMonitorService;
-import com.future.observermonitor.service.SceneService;
+import com.future.observermonitor.service.MonitorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 @Api("监控的API")
 @RestController
@@ -18,46 +18,22 @@ import org.springframework.web.bind.annotation.*;
 public class MonitorController {
 
     @Autowired
-    private SceneService sceneService;
+    private MonitorService monitorService;
 
     @Autowired
     private DeviceService deviceService;
 
-    @Autowired
-    private PublicMonitorService publicMonitorService;
-
-    @ApiOperation("获取用户拥有的所有应用场景")
-    @GetMapping("/scenes")
-    public ResponseResult getSceneList(UserDTO userDTO) {
-        return ResponseResult.success(sceneService.list(userDTO));
+    @ApiOperation("获取非法监控图像VO列表")
+    @GetMapping
+    public ResponseResult getIllegalInfoList(DeviceDTO deviceDTO) throws IOException, ParseException {
+        return ResponseResult.success(monitorService.listOfImgVO(deviceDTO));
     }
 
-    @ApiOperation("获取非法信息列表")
-    @GetMapping("/{scene}")
-    public ResponseResult getIllegalInfoList(@PathVariable String scene, DeviceDTO deviceDTO) {
-        switch (scene) {
-            case "public":
-                return ResponseResult.success(publicMonitorService.getIllegalInfoList(deviceDTO).getResult());
-            case "driving":
-
-            default:
-                return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在该应用场景" + scene);
-        }
-    }
-
-    @ApiOperation("添加非法监控图片及非法信息, 通过萤石开放平台抓取监控图片，并调用百度AI接口进行对图片进行检测，返回非法信息")
-    @PostMapping("/{scene}")
-    public ResponseResult detectMonitorVideo(@PathVariable String scene, @RequestBody DeviceDTO deviceDTO) throws Exception {
+    @ApiOperation("添加非法监控图片及非法信息, 通过萤石开放平台抓取监控图片，并调用百度AI接口进行对图片进行检测，获取非法监控图像VO")
+    @PostMapping
+    public ResponseResult detectMonitorVideo(@RequestBody DeviceDTO deviceDTO) throws Exception {
         deviceService.capture(deviceDTO);
-        deviceDTO.setScene(scene);
 
-        switch (scene) {
-            case "public":
-                return publicMonitorService.check(deviceDTO);
-            case "driving":
-
-            default:
-                return ResponseResult.fail(StatusCode.BAD_REQUEST, "不存在该应用场景" + scene);
-        }
+        return ResponseResult.success(monitorService.check(deviceDTO));
     }
 }

@@ -1,11 +1,14 @@
 package com.future.observermonitor.controller;
 
+import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.vo.ResponseResult;
 import com.future.observermonitor.service.DeviceService;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +23,13 @@ public class DeviceController {
     @GetMapping
     public ResponseResult getDeviceList(UserDTO userDTO) throws Exception {
         return ResponseResult.success(deviceService.list(userDTO));
+    }
+
+    @ApiModelProperty("更新设备")
+    @PutMapping
+    public ResponseResult putDevice(DeviceDTO deviceDTO) {
+        deviceService.update(deviceDTO);
+
+        return ResponseResult.success();
     }
 }

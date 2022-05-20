@@ -1,10 +1,10 @@
 package com.future.observeruser.controller;
 
 import com.future.observercommon.vo.ResponseResult;
-import com.future.observercommon.vo.UserVO;
 import com.future.observeruser.dto.ModifyPasswordDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observeruser.service.UserService;
+import com.future.observeruser.vo.UserVO;
 import io.swagger.annotations.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;

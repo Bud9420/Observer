@@ -39,7 +39,7 @@ public class UserRealm extends AuthorizingRealm {
 
         Set<String> set = new HashSet<>();
         for (Role role : roles) {
-            set.add(role.getName());
+            set.add(role.getRoleName());
         }
 
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();

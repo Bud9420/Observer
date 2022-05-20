@@ -1,10 +1,10 @@
 package com.future.observeruser.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.future.observercommon.vo.UserVO;
 import com.future.observeruser.dto.ModifyPasswordDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observeruser.po.User;
+import com.future.observeruser.vo.UserVO;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;

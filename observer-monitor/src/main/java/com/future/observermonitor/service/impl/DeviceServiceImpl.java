@@ -1,13 +1,14 @@
 package com.future.observermonitor.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.future.observercommon.dto.DeviceDTO;
 import com.future.observercommon.dto.UserDTO;
 import com.future.observercommon.util.BeanUtil;
 import com.future.observercommon.util.JacksonUtil;
-import com.future.observercommon.vo.DeviceVO;
+import com.future.observermonitor.vo.DeviceVO;
 import com.future.observermonitor.mapper.DeviceMapper;
 import com.future.observermonitor.po.Device;
 import com.future.observermonitor.po.Scene;
@@ -55,7 +56,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
              * 获取监控设备的应用场景名，并保存至deviceVO
              */
             Scene scene = sceneService.getOne(new QueryWrapper<Scene>().eq("id", device.getSceneId()));
-            deviceVO.setSceneName(scene.getName());
+            deviceVO.setSceneName(scene.getSceneName());
 
             /*
              * 获取监控设备的状态信息，并保存至deviceVO
@@ -111,5 +112,13 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         // 获取监控图片的网络路径，并保存至deviceDTO
         String picUrl = JacksonUtil.jsonNodeOf(rs, "data", "picUrl").asText();
         deviceDTO.setPicUrl(picUrl);
+    }
+
+    @Override
+    public boolean update(DeviceDTO deviceDTO) {
+        Device device = new Device();
+        BeanUtil.copyBeanProp(device, deviceDTO);
+
+        return update(device, new UpdateWrapper<Device>().eq("device_serial", device.getDeviceSerial()));
     }
 }
