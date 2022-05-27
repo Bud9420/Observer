@@ -8,4 +8,6 @@ import java.util.List;
 public interface DeviceMapper extends BaseMapper<Device> {
 
     List<Device> selectOneByUsername(String username);
+
+    void update(Device device);
 }

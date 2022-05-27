@@ -24,6 +24,8 @@ public class Scene {
 
     private String sceneName;
 
+    private String descInfo;
+
     private Integer locHeight;
 
     private Integer locWidth;

@@ -5,7 +5,7 @@
 
     <select id="selectListByDeviceSerial" resultType="StatisticForDevice">
         select mpsd.*
-        from monitor_public_statistic_device mpsd
+        from monitor_statistic_device mpsd
                  left join monitor_device md
                            on mpsd.device_id = md.id
         where md.device_serial = #{deviceSerial}
@@ -14,15 +14,15 @@
 
     <select id="selectOneByDeviceSerial" resultType="StatisticForDevice">
         select mpsd.*
-        from monitor_public_statistic_device mpsd
+        from monitor_statistic_device mpsd
                  left join monitor_device md
                            on mpsd.device_id = md.id
         where md.device_serial = #{deviceSerial}
           and date = #{date}
     </select>
 
-    <insert id="insertByDeviceSerial"  parameterType="StatisticForDevice">
-        insert into monitor_public_statistic_device(
+    <insert id="insertByDeviceSerial" parameterType="StatisticForDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_statistic_device(
         create_time,
         update_time,
         date,

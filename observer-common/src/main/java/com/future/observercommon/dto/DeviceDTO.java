@@ -24,8 +24,8 @@ public class DeviceDTO {
     @ApiModelProperty("用户名")
     private String username;
 
-    @ApiModelProperty("应用场景")
-    private String scene;
+    @ApiModelProperty("应用场景名")
+    private String sceneName;
 
     @ApiModelProperty("萤石开放平台的AccessToken")
     private String accessToken;

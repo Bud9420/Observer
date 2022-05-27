@@ -1,6 +1,5 @@
 package com.future.observeruser.vo;
 
-import com.future.observercommon.dto.CompanyDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,9 +18,9 @@ public class UserVO {
     @ApiModelProperty("电话号码")
     private String phone;
 
-    @ApiModelProperty("用户头像")
+    @ApiModelProperty("用户头像的base64编码")
     private String headImg;
 
     @ApiModelProperty("所在企业的信息")
-    private CompanyDTO companyDTO;
+    private CompanyVO companyVO;
 }

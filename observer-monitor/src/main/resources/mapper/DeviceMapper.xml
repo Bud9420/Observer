@@ -11,4 +11,47 @@
         where uu.username = #{username}
     </select>
 
+    <update id="update" parameterType="Device">
+        update monitor_device
+        <set>
+            update_time = #{updateTime},
+            <if test="deviceName != null">
+                device_name = #{deviceName},
+            </if>
+            <if test="channelNo != null">
+                channel_no = #{channelNo},
+            </if>
+            <if test="sceneName != null">
+                scene_id = (select id from monitor_scene where scene_name = #{sceneName}),
+            </if>
+            loc_height = #{locHeight},
+            loc_width = #{locWidth},
+            loc_left = #{locLeft},
+            loc_top = #{locTop},
+            gender = #{gender},
+            age = #{age},
+            upper_wear = #{upperWear},
+            upper_color = #{upperColor},
+            upper_wear_texture = #{upperWearTexture},
+            upper_wear_fg = #{upperWearFg},
+            lower_wear = #{lowerWear},
+            lower_color = #{lowerColor},
+            head_wear = #{headWear},
+            glasses = #{glasses},
+            bag = #{bag},
+            face_mask = #{faceMask},
+            orientation = #{orientation},
+            cellphone = #{cellphone},
+            smoke = #{smoke},
+            carrying_item = #{carryingItem},
+            umbrella = #{umbrella},
+            vehicle = #{vehicle},
+            occlusion = #{occlusion},
+            upper_cut = #{upperCut},
+            lower_cut = #{lowerCut},
+            is_human = #{isHuman}
+        </set>
+        where device_serial = #{deviceSerial}
+    </update>
+
 </mapper>

@@ -5,7 +5,7 @@
 
     <select id="selectListByUsername" resultType="StatisticForUser">
         select mpsu.*
-        from monitor_public_statistic_user mpsu
+        from monitor_statistic_user mpsu
                  left join user_userinfo uu
                            on mpsu.user_id = uu.id
         where uu.username = #{username}
@@ -14,15 +14,15 @@
 
     <select id="selectOneByUsername" resultType="StatisticForUser">
         select mpsu.*
-        from monitor_public_statistic_user mpsu
+        from monitor_statistic_user mpsu
                  left join user_userinfo uu
                            on mpsu.user_id = uu.id
         where uu.username = #{username}
           and date = #{date}
     </select>
 
-    <insert id="insertByUsername" parameterType="StatisticForUser">
-        insert into monitor_public_statistic_user (
+    <insert id="insertByUsername" parameterType="StatisticForUser" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_statistic_user (
         create_time,
         update_time,
         date,

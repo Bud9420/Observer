@@ -2,8 +2,14 @@ package com.future.observermonitor.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel("非法信息VO")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class IllegalInfoVO {
 
     @ApiModelProperty("人体区域的高度")

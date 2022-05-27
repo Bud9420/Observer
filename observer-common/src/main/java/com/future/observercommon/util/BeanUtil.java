@@ -42,12 +42,20 @@ public class BeanUtil extends BeanUtils {
      *
      * @param target  目标列表
      * @param sources 源列表
+     * @param cls     目标元素的Class
      * @param <T>     目标列表的元素类型
      * @param <S>     源列表的元素类型
      */
-    public static <T, S> void copyListProp(List<T> target, List<S> sources) {
+    public static <T, S> void copyListProp(List<T> target, List<S> sources, Class<T> cls) {
         for (S s : sources) {
-            T t = (T) new Object();
+            T t = null;
+            try {
+                t = cls.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
             copyBeanProp(t, s);
             target.add(t);
         }

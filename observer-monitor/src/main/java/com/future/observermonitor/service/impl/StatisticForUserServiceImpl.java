@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +38,7 @@ public class StatisticForUserServiceImpl extends ServiceImpl<StatisticForUserMap
         List<StatisticForUser> statisticForUserList = statisticForUserMapper.selectListByUsername(statisticDTO.getUsername(), begin, end);
 
         List<StatisticVO> statisticVOList = new ArrayList<>(statisticForUserList.size());
-        BeanUtil.copyListProp(statisticVOList, statisticForUserList);
+        BeanUtil.copyListProp(statisticVOList, statisticForUserList, StatisticVO.class);
 
         return statisticVOList;
     }
@@ -54,24 +54,19 @@ public class StatisticForUserServiceImpl extends ServiceImpl<StatisticForUserMap
             statisticForUserMapper.insertByUsername(statisticForUser);
         } else {
             // 已统计过
-            List<Method> setterMethodsOfPO = BeanUtil.getSetterMethods(statisticForUser);
-            List<Method> getterMethodsOfPO = BeanUtil.getGetterMethods(statisticForUser);
+            Field[] fieldsOfPO = statisticForUser.getClass().getDeclaredFields();
+            Field[] fieldsOfDTO = statisticDTO.getClass().getDeclaredFields();
 
-            List<Method> getterMethodsOfDTO = BeanUtil.getGetterMethods(statisticDTO);
+            for (int i = 4; i < fieldsOfDTO.length; i++) {
+                fieldsOfDTO[i].setAccessible(true);
+                Integer fieldValueOfDTO = (Integer) fieldsOfDTO[i].get(statisticDTO);
+                fieldValueOfDTO = fieldValueOfDTO == null ? 0 : fieldValueOfDTO;
 
-            for (int i = 4; i < getterMethodsOfDTO.size(); i++) {
-                Method setterMethodOfPO = setterMethodsOfPO.get(i);
-                Method getterMethodOfPO = getterMethodsOfPO.get(i);
+                fieldsOfPO[i].setAccessible(true);
+                Integer fieldValueOfPO = (Integer) fieldsOfPO[i].get(statisticForUser);
+                fieldValueOfPO = fieldValueOfPO == null ? 0 : fieldValueOfPO;
 
-                Method getterMethodOfDTO = getterMethodsOfDTO.get(i);
-
-                Integer fieldOfPO = (Integer) getterMethodOfPO.invoke(statisticForUser);
-                fieldOfPO = fieldOfPO == null ? 0 : fieldOfPO;
-
-                Integer fieldOfDTO = (Integer) getterMethodOfDTO.invoke(statisticDTO);
-                fieldOfDTO = fieldOfDTO == null ? 0 : fieldOfDTO;
-
-                setterMethodOfPO.invoke(statisticForUser, fieldOfDTO + fieldOfPO);
+                fieldsOfPO[i].set(statisticForUser, fieldValueOfDTO + fieldValueOfPO);
             }
 
             updateById(statisticForUser);

@@ -16,7 +16,6 @@
         <module>observer-common</module>
         <module>observer-eureka</module>
         <module>observer-monitor</module>
-        <module>observer-monitor-public</module>
         <module>observer-user</module>
         <module>ysopen-api</module>
     </modules>

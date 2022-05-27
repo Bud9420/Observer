@@ -26,6 +26,7 @@ import org.springframework.util.Base64Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -70,12 +71,12 @@ public class MonitorServiceImpl implements MonitorService {
             );
 
             List<IllegalInfoVO> illegalInfoVOList = new ArrayList<>();
-            BeanUtil.copyListProp(illegalInfoVOList, illegalInfoList);
+            BeanUtil.copyListProp(illegalInfoVOList, illegalInfoList, IllegalInfoVO.class);
 
             ImgVO imgVO = new ImgVO();
             BeanUtil.copyBeanProp(imgVO, img);
             imgVO.setBase64OfImg(Base64Utils.encodeToString(FileUtil.readFileAsBytes(img.getPath())));
-            imgVO.setIllegalInfoVOList(illegalInfoVOList);
+            imgVO.setIllegalInfoList(illegalInfoVOList);
 
             imgVOList.add(imgVO);
         }
@@ -236,34 +237,34 @@ public class MonitorServiceImpl implements MonitorService {
              * 非法判断
              */
             // 非法信息（可能）
-            List<Method> getterMethodsOfIllegalInfo = BeanUtil.getGetterMethods(illegalInfo);
+            Field[] fieldsOfIllegalInfo = illegalInfo.getClass().getDeclaredFields();
             // 非法标准
-            List<Method> getterMethodsOfDevice = BeanUtil.getGetterMethods(device);
+            Field[] fieldsOfDevice = device.getClass().getDeclaredFields();
             // 非法统计信息
-            List<Method> getterMethodsOfStatistic = BeanUtil.getGetterMethods(statisticDTO);
-            List<Method> setterMethodsOfStatistic = BeanUtil.getSetterMethods(statisticDTO);
+            Field[] fieldsOfStatistic = statisticDTO.getClass().getDeclaredFields();
 
             boolean flag = false; // 表示当前人体信息是否非法
-            for (int j = 3; j < getterMethodsOfIllegalInfo.size() - 1; j++) {
-                Method getterMethodOfIllegalInfo = getterMethodsOfIllegalInfo.get(j);
-                String illegalInfoField = (String) getterMethodOfIllegalInfo.invoke(illegalInfo);
+            for (int j = 7; j < fieldsOfIllegalInfo.length - 1; j++) {
+                Field fieldOfIllegalInfo = fieldsOfIllegalInfo[j];
+                fieldOfIllegalInfo.setAccessible(true);
+                String fieldValueOfIllegalInfo = (String) fieldOfIllegalInfo.get(illegalInfo);
 
-                Method getterMethodOfDevice = getterMethodsOfDevice.get(j);
-                String deviceField = (String) getterMethodOfDevice.invoke(device);
+                Field fieldOfDevice = fieldsOfDevice[j + 1];
+                fieldOfDevice.setAccessible(true);
+                String fieldValueOfDevice = (String) fieldOfDevice.get(device);
 
-                if (deviceField != null && deviceField.contains(illegalInfoField)) { // 出现非法信息
+                if (fieldValueOfDevice != null && fieldValueOfDevice.contains(fieldValueOfIllegalInfo)) { // 出现非法信息
                     // 添加非法类型
-                    illegalType.add(illegalInfoField);
+                    illegalType.add(fieldValueOfIllegalInfo);
 
                     /*
                      * 该类型的非法数 + 1
                      */
-                    Method getterMethodOfStatistic = getterMethodsOfStatistic.get(j + 1);
-                    Integer fieldOfStatistic = (Integer) getterMethodOfStatistic.invoke(statisticDTO);
-                    fieldOfStatistic = fieldOfStatistic == null ? 0 : fieldOfStatistic;
-
-                    Method setterMethodOfStatistic = setterMethodsOfStatistic.get(j + 1);
-                    setterMethodOfStatistic.invoke(statisticDTO, fieldOfStatistic + 1);
+                    Field fieldOfStatistic = fieldsOfStatistic[j + 1];
+                    fieldOfStatistic.setAccessible(true);
+                    Integer fieldValueOfStatistic = (Integer) fieldOfStatistic.get(statisticDTO);
+                    fieldValueOfStatistic = fieldValueOfStatistic == null ? 1 : fieldValueOfStatistic + 1;
+                    fieldOfStatistic.set(statisticDTO, fieldValueOfStatistic);
 
                     /*
                      * 非法总数 + 1，未处理数 + 1
@@ -319,9 +320,9 @@ public class MonitorServiceImpl implements MonitorService {
         ImgVO imgVO = new ImgVO();
 
         List<IllegalInfoVO> illegalInfoVOList = new ArrayList<>(illegalInfoList.size());
-        BeanUtil.copyListProp(illegalInfoVOList, illegalInfoList);
+        BeanUtil.copyListProp(illegalInfoVOList, illegalInfoList, IllegalInfoVO.class);
 
-        imgVO.setIllegalInfoVOList(illegalInfoVOList);
+        imgVO.setIllegalInfoList(illegalInfoVOList);
 
         return imgVO;
     }

@@ -7,10 +7,7 @@ import com.future.observermonitor.service.DeviceService;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/monitor/devices")
@@ -27,7 +24,7 @@ public class DeviceController {
 
     @ApiModelProperty("更新设备")
     @PutMapping
-    public ResponseResult putDevice(DeviceDTO deviceDTO) {
+    public ResponseResult putDevice(@RequestBody DeviceDTO deviceDTO) {
         deviceService.update(deviceDTO);
 
         return ResponseResult.success();

@@ -35,7 +35,6 @@ public interface DeviceService extends IService<Device> {
      * <根据设备序列号更新设备>
      *
      * @param deviceDTO 监控设备DTO
-     * @return 是否更新成功
      */
-    boolean update(DeviceDTO deviceDTO);
+    void update(DeviceDTO deviceDTO);
 }

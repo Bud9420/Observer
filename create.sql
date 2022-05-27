@@ -49,6 +49,7 @@ create table monitor_scene
     create_time        datetime         not null,
     update_time        datetime         not null,
     scene_name         char(255) unique not null,
+    desc_info          text             not null,
     -- 非法标准
     # 每个人体框的信息
     loc_height         int,
@@ -79,12 +80,14 @@ create table monitor_scene
     lower_cut          char(255),
     is_human           char(255)
 );
-insert into monitor_scene (id, create_time, update_time, scene_name, face_mask)
-values (1, now(), now(), 'epidemic', '无口罩');
-insert into monitor_scene(id, create_time, update_time, scene_name, cellphone, smoke)
-values (2, now(), now(), 'public', '看手机,打电话', '吸烟');
-insert into monitor_scene(id, create_time, update_time, scene_name, vehicle)
-values (3, now(), now(), 'driving', '骑摩托车,骑自行车,骑三轮车');
+insert into monitor_scene (id, create_time, update_time, scene_name, desc_info, face_mask)
+values (1, now(), now(), '疫情防控', '疫情防控：识别人体有无佩戴口罩、是否进入疫情高风险区域……', '无口罩');
+insert into monitor_scene(id, create_time, update_time, scene_name, desc_info, cellphone, smoke)
+values (2, now(), now(), '公共安全', '公共安全：检测人体在飞机上使用手机、加油站抽烟、违禁区域驶入车辆等非法行为……', '看手机,打电话', '吸烟');
+insert into monitor_scene(id, create_time, update_time, scene_name, desc_info, vehicle)
+values (3, now(), now(), '安全驾驶', '安全驾驶：检查驾驶员未系安全带、双手离开方向盘、闭眼、打哈欠、使用手机等危险行为……', '骑摩托车,骑自行车,骑三轮车');
+insert into monitor_scene(id, create_time, update_time, scene_name, desc_info)
+values (4, now(), now(), '自定义', '自定义：老用户可以自定义非法行为，建议新用户不要使用该方式');
 
 -- 监控设备
 create table monitor_device
@@ -98,12 +101,6 @@ create table monitor_device
     user_id            int              not null,
     scene_id           int              not null,
     -- 非法标准
-    # 每个人体框的信息
-    loc_height         int,
-    loc_width          int,
-    loc_left           int,
-    loc_top            int,
-    # 人体属性
     gender             char(255),
     age                char(255),
     upper_wear         char(255),
@@ -132,7 +129,18 @@ create table monitor_device
 insert into monitor_device
 (id, create_time, update_time, device_name, device_serial, channel_no, user_id, scene_id, face_mask, cellphone, smoke,
  vehicle)
-values (1, now(), now(), '演示设备', 'F82272589', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车');
+values (1, now(), now(), '演示设备1', 'F82272589', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (2, now(), now(), '演示设备2', 'J74318913', 1, 1, 1, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (3, now(), now(), '演示设备3', 'K37479865', 1, 1, 1, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (4, now(), now(), '演示设备4', 'Z12352212', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (5, now(), now(), '演示设备5', 'N78956135', 1, 1, 3, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (6, now(), now(), '演示设备6', 'X89552123', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (7, now(), now(), '演示设备7', 'B12345681', 1, 1, 1, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (8, now(), now(), '演示设备8', 'A58763411', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (9, now(), now(), '演示设备9', 'Q48464864', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (10, now(), now(), '演示设备10', 'L56841680', 1, 1, 3, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (11, now(), now(), '演示设备11', 'C12321352', 1, 1, 2, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车'),
+       (12, now(), now(), '演示设备12', 'Y45623215', 1, 1, 1, '无口罩', '看手机,打电话', '吸烟', '骑摩托车,骑自行车,骑三轮车');
 
 -- 非法监控图像
 create table monitor_img
@@ -289,7 +297,7 @@ create table auth_role
     id          int primary key auto_increment,
     create_time datetime         not null,
     update_time datetime         not null,
-    role_name        char(255) unique not null
+    role_name   char(255) unique not null
 );
 insert into auth_role
 values (1, now(), now(), 'monitor_public_user'),
@@ -313,10 +321,10 @@ values (1, now(), now(), 1, 1),
 -- 权限
 create table auth_permission
 (
-    id          int primary key auto_increment,
-    create_time datetime         not null,
-    update_time datetime         not null,
-    permission_name        char(255) unique not null
+    id              int primary key auto_increment,
+    create_time     datetime         not null,
+    update_time     datetime         not null,
+    permission_name char(255) unique not null
 ) engine = InnoDB
   charset utf8;
 insert into auth_permission

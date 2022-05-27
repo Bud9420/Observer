@@ -17,6 +17,7 @@ import com.future.observeruser.po.UserRole;
 import com.future.observeruser.service.CompanyService;
 import com.future.observeruser.service.UserService;
 import com.future.observeruser.dto.PasswordDTO;
+import com.future.observeruser.vo.CompanyVO;
 import com.future.observeruser.vo.UserVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -116,10 +117,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userVO.setHeadImg(Base64Utils.encodeToString(FileUtil.readFileAsBytes(user.getHeadPath())));
         // 获取所在企业
         Company company = companyService.getOne(new QueryWrapper<Company>().eq("id", user.getCompanyId()));
-        CompanyDTO companyDTO = new CompanyDTO();
-        BeanUtil.copyBeanProp(companyDTO, company);
-        companyDTO.setLicense(Base64Utils.encodeToString(FileUtil.readFileAsBytes(company.getLicensePath())));
-        userVO.setCompanyDTO(companyDTO);
+        CompanyVO companyVO = new CompanyVO();
+        BeanUtil.copyBeanProp(companyVO, company);
+        companyVO.setLicense(Base64Utils.encodeToString(FileUtil.readFileAsBytes(company.getLicensePath())));
+        userVO.setCompanyVO(companyVO);
         // 保存到session，并返回
         shiroSession.setAttribute("user", userVO);
         return userVO;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ApiModel("非法信息VO")
+@ApiModel("非法图像VO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -28,5 +28,5 @@ public class ImgVO {
     private String processStatus;
 
     @ApiModelProperty("非法信息列表")
-    private List<IllegalInfoVO> illegalInfoVOList;
+    private List<IllegalInfoVO> illegalInfoList;
 }

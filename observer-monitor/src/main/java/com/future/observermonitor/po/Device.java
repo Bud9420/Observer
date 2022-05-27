@@ -32,14 +32,6 @@ public class Device {
 
     private Integer sceneId;
 
-    private Integer locHeight;
-
-    private Integer locWidth;
-
-    private Integer locLeft;
-
-    private Integer locTop;
-
     private String gender;
 
     private String age;
@@ -83,4 +75,7 @@ public class Device {
     private String lowerCut;
 
     private String isHuman;
+
+    @TableField(exist = false)
+    private String sceneName;
 }

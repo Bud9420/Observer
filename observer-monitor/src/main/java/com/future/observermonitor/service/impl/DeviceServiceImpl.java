@@ -115,10 +115,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     @Override
-    public boolean update(DeviceDTO deviceDTO) {
+    public void update(DeviceDTO deviceDTO) {
         Device device = new Device();
         BeanUtil.copyBeanProp(device, deviceDTO);
 
-        return update(device, new UpdateWrapper<Device>().eq("device_serial", device.getDeviceSerial()));
+        deviceMapper.update(device);
     }
 }
